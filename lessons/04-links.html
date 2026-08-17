@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 4 — Links</title>
+  <link rel="stylesheet" href="../course.css">
+</head>
+<body>
+
+  <nav class="course-nav">
+    <a href="../index.html">Home</a>
+    <a href="03-text-and-headings.html">← Lesson 3</a>
+    <a href="04-links.html" class="current">Lesson 4</a>
+    <a href="05-lists.html">Lesson 5 →</a>
+  </nav>
+
+  <span class="badge">Lesson 4 of 7</span>
+  <h1>Links</h1>
+
+  <p>
+    Links let users click to go somewhere else — another page, another site, or
+    a section on the same page.
+  </p>
+
+  <h2>The a tag</h2>
+  <p><code>a</code> stands for "anchor". It needs an <strong>attribute</strong> called <code>href</code> that says where to go.</p>
+
+  <div class="demo-box">
+    <div class="demo-box-label">Live example</div>
+    <p>Go back to the <a href="../index.html">course home page</a>.</p>
+  </div>
+
+<pre><span class="tag">&lt;a </span><span class="attr">href</span><span class="tag">=</span><span class="text">"../index.html"</span><span class="tag">&gt;</span><span class="text">course home page</span><span class="tag">&lt;/a&gt;</span></pre>
+
+  <h2>Breaking down the syntax</h2>
+
+<pre><span class="tag">&lt;a </span><span class="attr">href</span><span class="tag">=</span><span class="text">"URL_GOES_HERE"</span><span class="tag">&gt;</span><span class="text">clickable text</span><span class="tag">&lt;/a&gt;</span>
+<span class="comment">     ^^^^^ attribute name</span>
+<span class="comment">           ^^^^^^^^^^^^^^^ attribute value (in quotes)</span></pre>
+
+  <p>
+    <strong>Attributes</strong> are extra details on an opening tag.
+    Format: <code>attributeName="value"</code>
+  </p>
+
+  <h2>Types of links</h2>
+
+  <h3>1. Link to another file on your computer (relative path)</h3>
+<pre><span class="tag">&lt;a </span><span class="attr">href</span><span class="tag">=</span><span class="text">"lessons/05-lists.html"</span><span class="tag">&gt;</span><span class="text">Go to Lesson 5</span><span class="tag">&lt;/a&gt;</span></pre>
+  <p>Path is relative to the current file's folder — like a file path on your Mac.</p>
+
+  <h3>2. Link to a website (absolute URL)</h3>
+<pre><span class="tag">&lt;a </span><span class="attr">href</span><span class="tag">=</span><span class="text">"https://developer.mozilla.org"</span><span class="tag">&gt;</span><span class="text">MDN docs</span><span class="tag">&lt;/a&gt;</span></pre>
+
+  <h3>3. Open in a new tab</h3>
+<pre><span class="tag">&lt;a </span><span class="attr">href</span><span class="tag">=</span><span class="text">"https://example.com"</span> <span class="attr">target</span><span class="tag">=</span><span class="text">"_blank"</span><span class="tag">&gt;</span><span class="text">opens new tab</span><span class="tag">&lt;/a&gt;</span></pre>
+
+  <div class="callout java">
+    <strong>Java comparison:</strong> A link is like calling a method that jumps somewhere else.
+    <code>href</code> is the destination. The text between the tags is the button label.
+  </div>
+
+  <h2>Your turn</h2>
+  <p>
+    Open <a href="../exercises/04-links-blanks.html">Exercise 4</a>.
+    Add links between pages using <code>href</code>.
+  </p>
+
+  <footer class="course-footer">
+    <a href="03-text-and-headings.html">← Lesson 3</a>
+    <a href="05-lists.html">Lesson 5 →</a>
+  </footer>
+
+</body>
+</html>

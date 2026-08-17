@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 3 — Text and headings</title>
+  <link rel="stylesheet" href="../course.css">
+</head>
+<body>
+
+  <nav class="course-nav">
+    <a href="../index.html">Home</a>
+    <a href="02-page-skeleton.html">← Lesson 2</a>
+    <a href="03-text-and-headings.html" class="current">Lesson 3</a>
+    <a href="04-links.html">Lesson 4 →</a>
+  </nav>
+
+  <span class="badge">Lesson 3 of 7</span>
+  <h1>Text and headings</h1>
+
+  <p>Most of what you put on a web page is text. HTML gives you tags to structure it.</p>
+
+  <h2>Headings: h1 through h6</h2>
+  <p>There are six heading levels. <code>h1</code> is the biggest and most important (use once per page, usually).</p>
+
+  <div class="demo-box">
+    <div class="demo-box-label">Live rendering</div>
+    <h1>Heading 1 — page title</h1>
+    <h2>Heading 2 — section title</h2>
+    <h3>Heading 3 — subsection</h3>
+    <h4>Heading 4</h4>
+    <h5>Heading 5</h5>
+    <h6>Heading 6 — smallest</h6>
+  </div>
+
+  <div class="callout">
+    For your expense tracker, you'd use something like:<br>
+    <code>&lt;h1&gt;Expense Tracker&lt;/h1&gt;</code> at the top,<br>
+    then maybe <code>&lt;h2&gt;All Expenses&lt;/h2&gt;</code> above the list.
+  </div>
+
+  <h2>Paragraphs: p</h2>
+  <p>Wrap regular sentences in <code>&lt;p&gt;</code> tags. Each paragraph is its own block — the browser adds space between them automatically.</p>
+
+<pre><span class="tag">&lt;p&gt;</span><span class="text">This is one paragraph.</span><span class="tag">&lt;/p&gt;</span>
+<span class="tag">&lt;p&gt;</span><span class="text">This is another paragraph.</span><span class="tag">&lt;/p&gt;</span></pre>
+
+  <h2>Inline emphasis</h2>
+  <p>These go <em>inside</em> other elements — they don't start a new block:</p>
+
+  <div class="demo-box">
+    <p>I spent <strong>$45.00</strong> on <em>groceries</em> today.</p>
+  </div>
+
+<pre><span class="tag">&lt;p&gt;</span><span class="text">I spent </span><span class="tag">&lt;strong&gt;</span><span class="text">$45.00</span><span class="tag">&lt;/strong&gt;</span><span class="text"> on </span><span class="tag">&lt;em&gt;</span><span class="text">groceries</span><span class="tag">&lt;/em&gt;</span><span class="text"> today.</span><span class="tag">&lt;/p&gt;</span></pre>
+
+  <ul>
+    <li><code>&lt;strong&gt;</code> — important / bold</li>
+    <li><code>&lt;em&gt;</code> — emphasis / italic</li>
+    <li><code>&lt;br&gt;</code> — line break (self-closing, no content, no closing tag needed)</li>
+  </ul>
+
+  <h2>Line breaks</h2>
+  <p>Paragraphs already have space between them. For a break <em>inside</em> a paragraph:</p>
+
+<pre><span class="tag">&lt;p&gt;</span><span class="text">Line one</span><span class="tag">&lt;br&gt;</span><span class="text">Line two</span><span class="tag">&lt;/p&gt;</span></pre>
+
+  <div class="demo-box">
+    <p>Line one<br>Line two</p>
+  </div>
+
+  <h2>Your turn</h2>
+  <p>
+    Open <a href="../exercises/03-headings-blanks.html">Exercise 3</a>.
+    You'll format a small expense summary using headings and paragraphs.
+  </p>
+
+  <footer class="course-footer">
+    <a href="02-page-skeleton.html">← Lesson 2</a>
+    <a href="04-links.html">Lesson 4 →</a>
+  </footer>
+
+</body>
+</html>

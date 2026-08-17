@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 2 — The page skeleton</title>
+  <link rel="stylesheet" href="../course.css">
+</head>
+<body>
+
+  <nav class="course-nav">
+    <a href="../index.html">Home</a>
+    <a href="01-what-is-a-tag.html">← Lesson 1</a>
+    <a href="02-page-skeleton.html" class="current">Lesson 2</a>
+    <a href="03-text-and-headings.html">Lesson 3 →</a>
+  </nav>
+
+  <span class="badge">Lesson 2 of 7</span>
+  <h1>The page skeleton</h1>
+
+  <p>
+    Every HTML file follows the same basic structure. Once you know this shape,
+    you can open any web page's source and recognize it.
+  </p>
+
+  <h2>The template every page uses</h2>
+
+<pre><span class="tag">&lt;!DOCTYPE html&gt;</span>               <span class="comment">&lt;!-- tells browser: this is HTML5 --&gt;</span>
+<span class="tag">&lt;html&gt;</span>                        <span class="comment">&lt;!-- wraps the entire page --&gt;</span>
+  <span class="tag">&lt;head&gt;</span>                      <span class="comment">&lt;!-- invisible setup stuff --&gt;</span>
+    <span class="tag">&lt;title&gt;</span><span class="text">Page Title</span><span class="tag">&lt;/title&gt;</span>   <span class="comment">&lt;!-- text in the browser tab --&gt;</span>
+  <span class="tag">&lt;/head&gt;</span>
+  <span class="tag">&lt;body&gt;</span>                      <span class="comment">&lt;!-- everything the user sees --&gt;</span>
+    <span class="tag">&lt;h1&gt;</span><span class="text">Hello</span><span class="tag">&lt;/h1&gt;</span>
+  <span class="tag">&lt;/body&gt;</span>
+<span class="tag">&lt;/html&gt;</span></pre>
+
+  <h2>What each part does</h2>
+
+  <table style="width:100%; border-collapse: collapse; margin: 1rem 0;">
+    <tr style="border-bottom: 1px solid #e8e4dc;">
+      <td style="padding: 0.5rem;"><code>&lt;!DOCTYPE html&gt;</code></td>
+      <td style="padding: 0.5rem;">One line at the very top. Not a tag — a declaration.</td>
+    </tr>
+    <tr style="border-bottom: 1px solid #e8e4dc;">
+      <td style="padding: 0.5rem;"><code>&lt;html&gt;</code></td>
+      <td style="padding: 0.5rem;">The root. Everything else goes inside it.</td>
+    </tr>
+    <tr style="border-bottom: 1px solid #e8e4dc;">
+      <td style="padding: 0.5rem;"><code>&lt;head&gt;</code></td>
+      <td style="padding: 0.5rem;">Metadata — title, character encoding, links to CSS. Not visible on the page itself.</td>
+    </tr>
+    <tr style="border-bottom: 1px solid #e8e4dc;">
+      <td style="padding: 0.5rem;"><code>&lt;title&gt;</code></td>
+      <td style="padding: 0.5rem;">The text in the browser tab. Look at your tab right now — it says "Lesson 2 — The page skeleton".</td>
+    </tr>
+    <tr>
+      <td style="padding: 0.5rem;"><code>&lt;body&gt;</code></td>
+      <td style="padding: 0.5rem;">All visible content: headings, text, images, forms, everything.</td>
+    </tr>
+  </table>
+
+  <div class="callout java">
+    <strong>Java comparison:</strong> The skeleton is like the file structure of your Java project.
+    <code>public class Main</code> is the outer wrapper;
+    <code>public static void main</code> is where execution starts.
+    In HTML, <code>&lt;body&gt;</code> is where visible content lives.
+  </div>
+
+  <h2>Indentation (spacing)</h2>
+  <p>
+    HTML doesn't care about spaces or indentation — the browser ignores extra whitespace.
+    But <strong>you</strong> should indent nested tags so you can read your code:
+  </p>
+
+<pre><span class="tag">&lt;body&gt;</span>
+  <span class="tag">&lt;h1&gt;</span><span class="text">Expense Tracker</span><span class="tag">&lt;/h1&gt;</span>    <span class="comment">&lt;!-- indented: inside body --&gt;</span>
+  <span class="tag">&lt;p&gt;</span><span class="text">Welcome.</span><span class="tag">&lt;/p&gt;</span>           <span class="comment">&lt;!-- same level as h1 --&gt;</span>
+<span class="tag">&lt;/body&gt;</span></pre>
+
+  <h2>HTML comments</h2>
+  <p>Lines the browser ignores — notes for you:</p>
+
+<pre><span class="comment">&lt;!-- this is a comment, browser skips it --&gt;</span></pre>
+
+  <div class="callout tip">
+    <strong>Try it:</strong> Right-click this page → "View Page Source" (or Cmd+Option+U on Mac).
+    You'll see this exact skeleton with all the lesson content inside <code>&lt;body&gt;</code>.
+  </div>
+
+  <h2>Your turn</h2>
+  <p>
+    Open <a href="../exercises/02-skeleton-blanks.html">Exercise 2</a>.
+    Fill in the missing parts of the page skeleton from memory.
+  </p>
+
+  <footer class="course-footer">
+    <a href="01-what-is-a-tag.html">← Lesson 1</a>
+    <a href="03-text-and-headings.html">Lesson 3 →</a>
+  </footer>
+
+</body>
+</html>

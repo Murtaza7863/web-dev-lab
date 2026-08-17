@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 5 — Lists</title>
+  <link rel="stylesheet" href="../course.css">
+</head>
+<body>
+
+  <nav class="course-nav">
+    <a href="../index.html">Home</a>
+    <a href="04-links.html">← Lesson 4</a>
+    <a href="05-lists.html" class="current">Lesson 5</a>
+    <a href="06-forms.html">Lesson 6 →</a>
+  </nav>
+
+  <span class="badge">Lesson 5 of 7</span>
+  <h1>Lists</h1>
+
+  <p>
+    Your Java expense tracker stores expenses in a list (<code>ArrayList</code>).
+    On a web page, you show lists with HTML list tags.
+  </p>
+
+  <h2>Unordered list (bullets) — ul + li</h2>
+
+  <div class="demo-box">
+    <div class="demo-box-label">Live example — like viewAllExpenses()</div>
+    <ul>
+      <li>Coffee — $4.50 — Food</li>
+      <li>Bus pass — $30.00 — Transport</li>
+      <li>Netflix — $15.99 — Entertainment</li>
+    </ul>
+  </div>
+
+<pre><span class="tag">&lt;ul&gt;</span>                          <span class="comment">&lt;!-- ul = unordered list (bullets) --&gt;</span>
+  <span class="tag">&lt;li&gt;</span><span class="text">Coffee — $4.50 — Food</span><span class="tag">&lt;/li&gt;</span>   <span class="comment">&lt;!-- li = list item --&gt;</span>
+  <span class="tag">&lt;li&gt;</span><span class="text">Bus pass — $30.00 — Transport</span><span class="tag">&lt;/li&gt;</span>
+  <span class="tag">&lt;li&gt;</span><span class="text">Netflix — $15.99 — Entertainment</span><span class="tag">&lt;/li&gt;</span>
+<span class="tag">&lt;/ul&gt;</span></pre>
+
+  <h2>Ordered list (numbers) — ol + li</h2>
+
+  <div class="demo-box">
+    <div class="demo-box-label">Live example — like your CLI menu</div>
+    <ol>
+      <li>Add Expense</li>
+      <li>Remove Expense</li>
+      <li>View All Expenses</li>
+      <li>Exit</li>
+    </ol>
+  </div>
+
+<pre><span class="tag">&lt;ol&gt;</span>                          <span class="comment">&lt;!-- ol = ordered list (1, 2, 3...) --&gt;</span>
+  <span class="tag">&lt;li&gt;</span><span class="text">Add Expense</span><span class="tag">&lt;/li&gt;</span>
+  <span class="tag">&lt;li&gt;</span><span class="text">Remove Expense</span><span class="tag">&lt;/li&gt;</span>
+<span class="tag">&lt;/ol&gt;</span></pre>
+
+  <h2>The pattern</h2>
+  <ol>
+    <li>Pick <code>ul</code> (bullets) or <code>ol</code> (numbers)</li>
+    <li>Put one <code>&lt;li&gt;</code> inside for each item</li>
+    <li>Never put text directly inside <code>ul</code> — always wrap in <code>li</code></li>
+  </ol>
+
+  <div class="callout">
+    <strong>For the expense tracker web app:</strong> You'll use a <code>&lt;ul id="expense-list"&gt;</code>
+    as an empty container. Later, JavaScript will add <code>&lt;li&gt;</code> items when someone adds an expense.
+    For now, you can hard-code a few items to practice.
+  </div>
+
+  <h2>Your turn</h2>
+  <p>
+    Open <a href="../exercises/05-lists-blanks.html">Exercise 5</a>.
+    Build a list of expenses from scratch.
+  </p>
+
+  <footer class="course-footer">
+    <a href="04-links.html">← Lesson 4</a>
+    <a href="06-forms.html">Lesson 6 →</a>
+  </footer>
+
+</body>
+</html>

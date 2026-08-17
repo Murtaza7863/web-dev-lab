@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 1 — What is a tag?</title>
+  <link rel="stylesheet" href="../course.css">
+</head>
+<body>
+
+  <nav class="course-nav">
+    <a href="../index.html">Home</a>
+    <a href="01-what-is-a-tag.html" class="current">Lesson 1</a>
+    <a href="02-page-skeleton.html">Lesson 2 →</a>
+  </nav>
+
+  <span class="badge">Lesson 1 of 7</span>
+  <h1>What is a tag?</h1>
+
+  <p>
+    HTML is not a programming language like Java. It's a <strong>markup language</strong> —
+    you wrap content in <strong>tags</strong> to tell the browser what each piece is.
+  </p>
+
+  <h2>Tags look like this</h2>
+
+<pre><span class="tag">&lt;p&gt;</span><span class="text">Hello world</span><span class="tag">&lt;/p&gt;</span></pre>
+
+  <p>Break it down:</p>
+  <ul>
+    <li><code>&lt;p&gt;</code> — <strong>opening tag</strong> (starts a paragraph)</li>
+    <li><code>Hello world</code> — the <strong>content</strong> (what the user sees)</li>
+    <li><code>&lt;/p&gt;</code> — <strong>closing tag</strong> (ends the paragraph — notice the <code>/</code>)</li>
+  </ul>
+
+  <p>Together, opening tag + content + closing tag = an <strong>element</strong>.</p>
+
+  <div class="callout java">
+    <strong>Java comparison:</strong> Think of a tag like punctuation that labels meaning.
+    In Java you write <code>System.out.println("Hello");</code> to print text.
+    In HTML you write <code>&lt;p&gt;Hello&lt;/p&gt;</code> and the <em>browser</em> displays it —
+    no compile step, no <code>main</code> method.
+  </div>
+
+  <h2>See it live</h2>
+  <p>Below is a real paragraph element rendered by this page:</p>
+
+  <div class="demo-box">
+    <div class="demo-box-label">What you see in the browser</div>
+    <p>Hello world</p>
+  </div>
+
+  <p>The HTML that produced it:</p>
+
+<pre><span class="tag">&lt;p&gt;</span><span class="text">Hello world</span><span class="tag">&lt;/p&gt;</span></pre>
+
+  <h2>More tag examples</h2>
+
+  <div class="demo-box">
+    <div class="demo-box-label">Live examples on this page</div>
+    <h1>This is h1 — biggest heading</h1>
+    <h2>This is h2 — smaller heading</h2>
+    <p>This is a paragraph. Regular body text goes here.</p>
+    <strong>This is strong — bold text</strong><br>
+    <em>This is em — italic text</em>
+  </div>
+
+<pre><span class="tag">&lt;h1&gt;</span><span class="text">This is h1</span><span class="tag">&lt;/h1&gt;</span>
+<span class="tag">&lt;h2&gt;</span><span class="text">This is h2</span><span class="tag">&lt;/h2&gt;</span>
+<span class="tag">&lt;p&gt;</span><span class="text">This is a paragraph.</span><span class="tag">&lt;/p&gt;</span>
+<span class="tag">&lt;strong&gt;</span><span class="text">Bold</span><span class="tag">&lt;/strong&gt;</span>
+<span class="tag">&lt;em&gt;</span><span class="text">Italic</span><span class="tag">&lt;/em&gt;</span></pre>
+
+  <h2>Rules to remember</h2>
+  <ol>
+    <li>Most tags come in pairs: open, then close.</li>
+    <li>Closing tags have a <code>/</code> before the name: <code>&lt;/p&gt;</code></li>
+    <li>Tag names are lowercase (convention).</li>
+    <li>Content goes <em>between</em> the tags, not outside them.</li>
+  </ol>
+
+  <div class="callout warn">
+    <strong>Common mistake:</strong> Forgetting the closing tag.
+    <code>&lt;p&gt;Hello</code> with no <code>&lt;/p&gt;</code> still shows text, but everything
+    after it might get swallowed into that paragraph. Always close your tags.
+  </div>
+
+  <h2>Your turn</h2>
+  <p>
+    Open <a href="../exercises/01-tags-blanks.html">Exercise 1</a> in Cursor.
+    You'll see lines with <code>___</code> where tag names belong. Replace each
+    <code>___</code> with the correct tag, save, and refresh in the browser.
+  </p>
+
+  <footer class="course-footer">
+    <a href="../index.html">← Home</a>
+    <a href="02-page-skeleton.html">Lesson 2 →</a>
+  </footer>
+
+</body>
+</html>

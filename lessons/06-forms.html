@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 6 — Forms and inputs</title>
+  <link rel="stylesheet" href="../course.css">
+</head>
+<body>
+
+  <nav class="course-nav">
+    <a href="../index.html">Home</a>
+    <a href="05-lists.html">← Lesson 5</a>
+    <a href="06-forms.html" class="current">Lesson 6</a>
+    <a href="07-attributes.html">Lesson 7 →</a>
+  </nav>
+
+  <span class="badge">Lesson 6 of 7</span>
+  <h1>Forms and inputs</h1>
+
+  <p>
+    In your Java CLI app, <code>Scanner</code> reads what the user types.
+    On the web, users type into <strong>input</strong> fields inside a <strong>form</strong>.
+  </p>
+
+  <h2>Basic form</h2>
+
+  <div class="demo-box">
+    <div class="demo-box-label">Live example (won't do anything yet when you click — that's JavaScript later)</div>
+    <form>
+      <input type="text" placeholder="Description">
+      <input type="number" placeholder="Amount">
+      <input type="text" placeholder="Category">
+      <button type="button">Add Expense</button>
+    </form>
+  </div>
+
+<pre><span class="tag">&lt;form&gt;</span>
+  <span class="tag">&lt;input </span><span class="attr">type</span><span class="tag">=</span><span class="text">"text"</span> <span class="attr">placeholder</span><span class="tag">=</span><span class="text">"Description"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;input </span><span class="attr">type</span><span class="tag">=</span><span class="text">"number"</span> <span class="attr">placeholder</span><span class="tag">=</span><span class="text">"Amount"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;input </span><span class="attr">type</span><span class="tag">=</span><span class="text">"text"</span> <span class="attr">placeholder</span><span class="tag">=</span><span class="text">"Category"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;button </span><span class="attr">type</span><span class="tag">=</span><span class="text">"button"</span><span class="tag">&gt;</span><span class="text">Add Expense</span><span class="tag">&lt;/button&gt;</span>
+<span class="tag">&lt;/form&gt;</span></pre>
+
+  <h2>Key pieces</h2>
+
+  <table style="width:100%; border-collapse: collapse; margin: 1rem 0;">
+    <tr style="border-bottom: 1px solid #e8e4dc;">
+      <td style="padding: 0.5rem;"><code>&lt;form&gt;</code></td>
+      <td style="padding: 0.5rem;">Groups inputs together. Like a dialog box for data entry.</td>
+    </tr>
+    <tr style="border-bottom: 1px solid #e8e4dc;">
+      <td style="padding: 0.5rem;"><code>&lt;input&gt;</code></td>
+      <td style="padding: 0.5rem;">A text box. Self-closing — no <code>&lt;/input&gt;</code> needed.</td>
+    </tr>
+    <tr style="border-bottom: 1px solid #e8e4dc;">
+      <td style="padding: 0.5rem;"><code>type="text"</code></td>
+      <td style="padding: 0.5rem;">Regular text (description, category)</td>
+    </tr>
+    <tr style="border-bottom: 1px solid #e8e4dc;">
+      <td style="padding: 0.5rem;"><code>type="number"</code></td>
+      <td style="padding: 0.5rem;">Numbers only (amount)</td>
+    </tr>
+    <tr style="border-bottom: 1px solid #e8e4dc;">
+      <td style="padding: 0.5rem;"><code>placeholder="..."</code></td>
+      <td style="padding: 0.5rem;">Gray hint text shown when the box is empty</td>
+    </tr>
+    <tr>
+      <td style="padding: 0.5rem;"><code>&lt;button&gt;</code></td>
+      <td style="padding: 0.5rem;">A clickable button. Text goes between opening and closing tags.</td>
+    </tr>
+  </table>
+
+  <h2>Labels (optional but good practice)</h2>
+  <p>Labels tell the user what each input is for:</p>
+
+  <div class="demo-box">
+    <label for="desc">Description:</label>
+    <input id="desc" type="text" placeholder="e.g. Coffee">
+  </div>
+
+<pre><span class="tag">&lt;label </span><span class="attr">for</span><span class="tag">=</span><span class="text">"desc"</span><span class="tag">&gt;</span><span class="text">Description:</span><span class="tag">&lt;/label&gt;</span>
+<span class="tag">&lt;input </span><span class="attr">id</span><span class="tag">=</span><span class="text">"desc"</span> <span class="attr">type</span><span class="tag">=</span><span class="text">"text"</span><span class="tag">&gt;</span>
+<span class="comment">       ^^^^^^^^^^^^^^^^ must match the label's for=""</span></pre>
+
+  <div class="callout java">
+    <strong>Java comparison:</strong><br>
+    <code>System.out.print("Enter description: ")</code> → the <code>&lt;label&gt;</code><br>
+    <code>String desc = sc.next()</code> → the <code>&lt;input&gt;</code><br>
+    Choosing menu option 1 → clicking the <code>&lt;button&gt;</code> (once JS is wired up)
+  </div>
+
+  <div class="callout warn">
+    <strong>Why type="button"?</strong> Without it, a button inside a form tries to submit the form
+    and reload the page. We use <code>type="button"</code> for now so nothing breaks before we add JavaScript.
+  </div>
+
+  <h2>Your turn</h2>
+  <p>
+    Open <a href="../exercises/06-form-blanks.html">Exercise 6</a>.
+    Build the expense entry form by filling in the blanks.
+  </p>
+
+  <footer class="course-footer">
+    <a href="05-lists.html">← Lesson 5</a>
+    <a href="07-attributes.html">Lesson 7 →</a>
+  </footer>
+
+</body>
+</html>

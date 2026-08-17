@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 7 — Attributes</title>
+  <link rel="stylesheet" href="../course.css">
+</head>
+<body>
+
+  <nav class="course-nav">
+    <a href="../index.html">Home</a>
+    <a href="06-forms.html">← Lesson 6</a>
+    <a href="07-attributes.html" class="current">Lesson 7</a>
+  </nav>
+
+  <span class="badge">Lesson 7 of 7</span>
+  <h1>Attributes</h1>
+
+  <p>
+    You've already used attributes (<code>href</code>, <code>type</code>, <code>placeholder</code>).
+    This lesson covers the ones you'll use most, especially <code>id</code> and <code>class</code>.
+  </p>
+
+  <h2>What is an attribute?</h2>
+  <p>Extra information on an opening tag:</p>
+
+<pre><span class="tag">&lt;tag </span><span class="attr">name</span><span class="tag">=</span><span class="text">"value"</span><span class="tag">&gt;</span><span class="text">content</span><span class="tag">&lt;/tag&gt;</span></pre>
+
+  <h2>id — unique name for one element</h2>
+  <p>Like a variable name. There should only be <strong>one</strong> element with each id on a page.</p>
+
+<pre><span class="tag">&lt;ul </span><span class="attr">id</span><span class="tag">=</span><span class="text">"expense-list"</span><span class="tag">&gt;&lt;/ul&gt;</span>
+<span class="comment">     ^^^^^^^^^^^^^^ JavaScript will find this later to add items</span></pre>
+
+  <div class="callout java">
+    <strong>Java comparison:</strong> <code>id="expense-list"</code> is like naming a variable
+    <code>expenseList</code> so you can refer to it later. JavaScript will do
+    <code>document.getElementById("expense-list")</code> — same idea as using a variable name.
+  </div>
+
+  <h2>class — label for styling groups</h2>
+  <p>Multiple elements can share the same class. Used heavily in CSS (next course section).</p>
+
+<pre><span class="tag">&lt;li </span><span class="attr">class</span><span class="tag">=</span><span class="text">"expense-item"</span><span class="tag">&gt;</span><span class="text">Coffee — $4.50</span><span class="tag">&lt;/li&gt;</span>
+<span class="tag">&lt;li </span><span class="attr">class</span><span class="tag">=</span><span class="text">"expense-item"</span><span class="tag">&gt;</span><span class="text">Bus — $30.00</span><span class="tag">&lt;/li&gt;</span></pre>
+
+  <h2>Other attributes you've seen</h2>
+  <ul>
+    <li><code>href</code> — link destination (on <code>&lt;a&gt;</code>)</li>
+    <li><code>src</code> — image file path (on <code>&lt;img&gt;</code>)</li>
+    <li><code>type</code> — input/button behavior (on <code>&lt;input&gt;</code>, <code>&lt;button&gt;</code>)</li>
+    <li><code>placeholder</code> — hint text in an empty input</li>
+    <li><code>for</code> — connects a label to an input's id</li>
+    <li><code>lang="en"</code> — page language (on <code>&lt;html&gt;</code>)</li>
+    <li><code>charset="UTF-8"</code> — character encoding (on <code>&lt;meta&gt;</code>)</li>
+  </ul>
+
+  <h2>Self-closing tags</h2>
+  <p>Some tags have no content and no closing tag:</p>
+
+<pre><span class="tag">&lt;input </span><span class="attr">type</span><span class="tag">=</span><span class="text">"text"</span><span class="tag">&gt;</span>
+<span class="tag">&lt;img </span><span class="attr">src</span><span class="tag">=</span><span class="text">"photo.jpg"</span> <span class="attr">alt</span><span class="tag">=</span><span class="text">"A photo"</span><span class="tag">&gt;</span>
+<span class="tag">&lt;br&gt;</span>
+<span class="tag">&lt;meta </span><span class="attr">charset</span><span class="tag">=</span><span class="text">"UTF-8"</span><span class="tag">&gt;</span></pre>
+
+  <h2>Putting it all together</h2>
+  <p>Here's what a complete expense tracker HTML page looks like — structure only, no styling or behavior yet:</p>
+
+<pre><span class="tag">&lt;!DOCTYPE html&gt;</span>
+<span class="tag">&lt;html </span><span class="attr">lang</span><span class="tag">=</span><span class="text">"en"</span><span class="tag">&gt;</span>
+<span class="tag">&lt;head&gt;</span>
+  <span class="tag">&lt;meta </span><span class="attr">charset</span><span class="tag">=</span><span class="text">"UTF-8"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;title&gt;</span><span class="text">Expense Tracker</span><span class="tag">&lt;/title&gt;</span>
+<span class="tag">&lt;/head&gt;</span>
+<span class="tag">&lt;body&gt;</span>
+  <span class="tag">&lt;h1&gt;</span><span class="text">Expense Tracker</span><span class="tag">&lt;/h1&gt;</span>
+
+  <span class="tag">&lt;form </span><span class="attr">id</span><span class="tag">=</span><span class="text">"add-form"</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;input </span><span class="attr">id</span><span class="tag">=</span><span class="text">"description"</span> <span class="attr">type</span><span class="tag">=</span><span class="text">"text"</span> <span class="attr">placeholder</span><span class="tag">=</span><span class="text">"Description"</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;input </span><span class="attr">id</span><span class="tag">=</span><span class="text">"amount"</span> <span class="attr">type</span><span class="tag">=</span><span class="text">"number"</span> <span class="attr">placeholder</span><span class="tag">=</span><span class="text">"Amount"</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;input </span><span class="attr">id</span><span class="tag">=</span><span class="text">"category"</span> <span class="attr">type</span><span class="tag">=</span><span class="text">"text"</span> <span class="attr">placeholder</span><span class="tag">=</span><span class="text">"Category"</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;button </span><span class="attr">type</span><span class="tag">=</span><span class="text">"button"</span><span class="tag">&gt;</span><span class="text">Add Expense</span><span class="tag">&lt;/button&gt;</span>
+  <span class="tag">&lt;/form&gt;</span>
+
+  <span class="tag">&lt;h2&gt;</span><span class="text">All Expenses</span><span class="tag">&lt;/h2&gt;</span>
+  <span class="tag">&lt;ul </span><span class="attr">id</span><span class="tag">=</span><span class="text">"expense-list"</span><span class="tag">&gt;&lt;/ul&gt;</span>
+
+  <span class="tag">&lt;p&gt;</span><span class="text">Total: </span><span class="tag">&lt;strong </span><span class="attr">id</span><span class="tag">=</span><span class="text">"total"</span><span class="tag">&gt;</span><span class="text">$0.00</span><span class="tag">&lt;/strong&gt;&lt;/p&gt;</span>
+<span class="tag">&lt;/body&gt;</span>
+<span class="tag">&lt;/html&gt;</span></pre>
+
+  <h2>Final exercise</h2>
+  <p>
+    Open <a href="../exercises/07-expense-page-blanks.html">Exercise 7</a>.
+    Build this entire expense tracker page yourself by filling in the blanks.
+    When you're done, you'll have recreated your Java app's UI in HTML — still static,
+    but real.
+  </p>
+
+  <div class="callout tip">
+    <strong>You finished the HTML course!</strong> When Exercise 7 looks right in the browser,
+    come back and we'll do CSS (make it look good) then JavaScript (make the button work).
+  </div>
+
+  <footer class="course-footer">
+    <a href="06-forms.html">← Lesson 6</a>
+    <a href="../index.html">Back to home →</a>
+  </footer>
+
+</body>
+</html>
