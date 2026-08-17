@@ -61,14 +61,18 @@ window.LEARN_TRACKS.push({
         prompt:
           "In the manifest, which field makes it open like an app without the Safari/Chrome URL bar? Type the field name and value like display: standalone",
         placeholder: "field: value",
+        expected: "display: standalone",
         check: (raw) => {
-          const ok = /display\s*[:=]\s*standalone/i.test(raw);
+          const s = raw.toLowerCase();
+          const ok =
+            /standalone/.test(s) &&
+            (/display/.test(s) || /^\s*standalone\s*$/.test(s));
           return ok
             ? {
                 ok: true,
                 msg: "display: standalone is the installable-app look.",
               }
-            : { ok: false, msg: "Expected: display: standalone" };
+            : { ok: false, msg: "Expected: display: standalone — or Skip." };
         },
       },
     },

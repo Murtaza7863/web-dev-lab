@@ -394,22 +394,27 @@
     mountExercise(
       document.getElementById("ex"),
       lesson.exercise,
-      () => {
-        const win = Game.lessonWin(lesson.id, lesson.words);
+      (info) => {
+        const skipped = info && info.skipped;
+        const win = skipped
+          ? Game.lessonSkip(lesson.id, lesson.words)
+          : Game.lessonWin(lesson.id, lesson.words);
         const n = neighbors(track.id, lesson.id);
-        const msg = document.createElement("p");
-        msg.className = "msg ok";
-        const xpBit = win.first
-          ? `+${win.xp} XP. `
-          : "Already cleared — combo still counts. ";
+        const box = document.createElement("p");
+        box.className = "msg ok";
+        const xpBit = skipped
+          ? "Checker skipped. "
+          : win.first
+            ? `+${win.xp} XP. `
+            : "Already cleared — combo still counts. ";
         const back = n.prev
           ? `<a href="${lessonHref(n.prev)}">← Back</a> `
           : "";
         const more = n.next
           ? `<a href="${lessonHref(n.next)}">Next step →</a>`
           : `<a href="#/lab">Run it in the Lab</a>`;
-        msg.innerHTML = xpBit + back + more;
-        document.getElementById("ex").appendChild(msg);
+        box.innerHTML = xpBit + back + more;
+        document.getElementById("ex").appendChild(box);
       },
       () => Game.hit(false),
     );
@@ -510,6 +515,15 @@
     return { ok: true, msg: "All tests passed." };
   }
 
+  function expectedOf(ex) {
+    if (ex.expected) return ex.expected;
+    if (ex.type === "choice") {
+      const opt = (ex.options || []).find((o) => o.ok);
+      return opt ? opt.text : "";
+    }
+    return "";
+  }
+
   function mountExercise(root, ex, onPass, onFail, opts) {
     if (!ex) {
       root.innerHTML = "";
@@ -525,6 +539,7 @@
       "text",
     ].includes(ex.type);
     const previewId = "ex-preview";
+    const alwaysSkip = ex.type === "text" || ex.type === "java";
     root.innerHTML = `
       <h2>Challenge</h2>
       <p>${esc(ex.prompt)}</p>
@@ -546,14 +561,45 @@
             : ""
       }
       ${["html", "css", "js-dom"].includes(ex.type) ? `<div class="demo-label">Preview</div><div id="${previewId}"></div>` : ""}
-      <div class="row"><button class="btn" type="button" id="ex-run">Lock in</button></div>
+      <div class="row">
+        <button class="btn" type="button" id="ex-run">Lock in</button>
+        <button class="btn ghost${alwaysSkip ? "" : " hidden"}" type="button" id="ex-skip">Skip — show expected</button>
+      </div>
       <div id="ex-msg"></div>
     `;
 
     const msg = root.querySelector("#ex-msg");
     const runBtn = root.querySelector("#ex-run");
+    const skipBtn = root.querySelector("#ex-skip");
     const codeEl = root.querySelector("#ex-code");
     let settled = false;
+
+    function revealExpected() {
+      const expected = expectedOf(ex);
+      if (codeEl && expected) codeEl.value = expected;
+      return expected;
+    }
+
+    function pass(skipped) {
+      if (settled) return;
+      settled = true;
+      onPass({ skipped: Boolean(skipped) });
+    }
+
+    function skip() {
+      if (settled) return;
+      const expected = revealExpected();
+      const shown = expected
+        ? `Expected form: ${expected}`
+        : "Skipped. Keep moving — the checker wanted a specific shape.";
+      msg.innerHTML = `<div class="msg ok">${esc(shown)}</div>`;
+      if (opts && opts.advanceOnFail) {
+        settled = true;
+        if (onFail) onFail({ skipped: true });
+      } else {
+        pass(true);
+      }
+    }
 
     async function run() {
       msg.innerHTML = "";
@@ -566,22 +612,32 @@
         );
         msg.innerHTML = `<div class="msg ${result.ok ? "ok" : "bad"}">${esc(result.msg)}${ex.why && result.ok ? " " + esc(ex.why) : ""}</div>`;
         if (result.ok) {
-          if (!settled) {
-            settled = true;
-            onPass();
+          pass(false);
+        } else {
+          skipBtn.classList.remove("hidden");
+          if (onFail && result.msg !== "Pick one.") {
+            if (opts && opts.advanceOnFail) {
+              if (settled) return;
+              settled = true;
+            }
+            onFail(result);
           }
-        } else if (onFail && result.msg !== "Pick one.") {
-          if (opts && opts.advanceOnFail) {
-            if (settled) return;
-            settled = true;
-          }
-          onFail(result);
         }
       } catch (err) {
+        skipBtn.classList.remove("hidden");
         msg.innerHTML = `<div class="msg bad">${esc(err.message)}</div>`;
       }
     }
     runBtn.onclick = run;
+    skipBtn.onclick = skip;
+    if (codeEl && codeEl.tagName === "INPUT") {
+      codeEl.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          run();
+        }
+      });
+    }
   }
 
   async function evaluate(ex, codeEl, preview, root) {
@@ -664,11 +720,12 @@
     }, ms);
   }
 
-  function recordCheck(i, track, ok) {
+  function recordCheck(i, track, ok, instant) {
     checkAnswers[i] = { track, ok };
     const qs = window.SKILL_CHECK;
     const filled = qs.every((_, idx) => checkAnswers[idx]);
-    scheduleCheckAdvance(filled ? qs.length : i + 1, ok ? 350 : 900);
+    const ms = instant ? 80 : ok ? 350 : 900;
+    scheduleCheckAdvance(filled ? qs.length : i + 1, ms);
   }
 
   function renderCheck() {
@@ -715,9 +772,9 @@
         Game.hit(true);
         recordCheck(i, q.track, true);
       },
-      () => {
+      (result) => {
         Game.hit(false);
-        recordCheck(i, q.track, false);
+        recordCheck(i, q.track, false, result && result.skipped);
       },
       { advanceOnFail: true },
     );

@@ -73,11 +73,13 @@ window.LEARN_TRACKS.push({
         prompt:
           "Write a RestController mapped to /api/expenses with a GetMapping method named all that returns List<Expense>. Minimal compiling-shaped Java is enough.",
         starter: "@RestController\n",
+        expected:
+          '@RestController\n@RequestMapping("/api/expenses")\nclass C {\n  @GetMapping\n  List<Expense> all() { return null; }\n}',
         must: [
           { re: /@RestController/, msg: "Need @RestController" },
           {
-            re: /@RequestMapping\s*\(\s*"\/api\/expenses"\s*\)/,
-            msg: 'Need @RequestMapping("/api/expenses")',
+            re: /@RequestMapping\s*\([^)]*\/api\/expenses/,
+            msg: '@RequestMapping("/api/expenses")',
           },
           { re: /@GetMapping/, msg: "Need @GetMapping on the list method" },
           { re: /List\s*<\s*Expense\s*>/, msg: "Return type List<Expense>" },
@@ -103,9 +105,11 @@ window.LEARN_TRACKS.push({
         prompt:
           'Add a method getOne with @GetMapping("/{id}") and a @PathVariable long id, returning Expense.',
         starter: '@GetMapping("/{id}")\n',
+        expected:
+          '@GetMapping("/{id}")\nExpense getOne(@PathVariable long id) { return null; }',
         must: [
           {
-            re: /@GetMapping\s*\(\s*"\/\{id\}"\s*\)/,
+            re: /@GetMapping\s*\([^)]*\{id\}/,
             msg: '@GetMapping("/{id}")',
           },
           { re: /@PathVariable/, msg: "Need @PathVariable" },
@@ -132,12 +136,14 @@ window.LEARN_TRACKS.push({
         prompt:
           "Write a PostMapping method create that takes @RequestBody Expense in and returns Expense.",
         starter: "@PostMapping\n",
+        expected:
+          "@PostMapping\nExpense create(@RequestBody Expense in) { return in; }",
         must: [
           { re: /@PostMapping/, msg: "@PostMapping" },
           { re: /@RequestBody/, msg: "@RequestBody Expense" },
           {
-            re: /Expense\s+create\s*\(/,
-            msg: "Method named create returning Expense",
+            re: /Expense\s+\w+\s*\(/,
+            msg: "A method that returns Expense",
           },
         ],
       },
@@ -242,10 +248,12 @@ window.LEARN_TRACKS.push({
         prompt:
           "Write a class ExpenseApp with @SpringBootApplication and a main that calls SpringApplication.run(ExpenseApp.class, args).",
         starter: "@SpringBootApplication\n",
+        expected:
+          "@SpringBootApplication\npublic class ExpenseApp {\n  public static void main(String[] args) {\n    SpringApplication.run(ExpenseApp.class, args);\n  }\n}",
         must: [
           { re: /@SpringBootApplication/, msg: "@SpringBootApplication" },
           {
-            re: /SpringApplication\.run\s*\(\s*ExpenseApp\.class/,
+            re: /SpringApplication\.run\s*\(\s*\w+\.class/,
             msg: "SpringApplication.run(ExpenseApp.class, args)",
           },
           {
@@ -278,13 +286,15 @@ window.LEARN_TRACKS.push({
         prompt:
           "Write a DeleteMapping on /{id} named remove that takes @PathVariable long id.",
         starter: '@DeleteMapping("/{id}")\n',
+        expected:
+          '@DeleteMapping("/{id}")\nvoid remove(@PathVariable long id) {}',
         must: [
           {
-            re: /@DeleteMapping\s*\(\s*"\/\{id\}"\s*\)/,
+            re: /@DeleteMapping\s*\([^)]*\{id\}/,
             msg: '@DeleteMapping("/{id}")',
           },
           { re: /@PathVariable/, msg: "@PathVariable" },
-          { re: /remove\s*\(/, msg: "method named remove" },
+          { re: /\w+\s*\(/, msg: "a method" },
         ],
       },
     },

@@ -123,18 +123,19 @@ window.SKILL_CHECK = [
     prompt:
       "Type valid JSON: description Coffee (string), amount 4.5 (number).",
     placeholder: "{ ... }",
+    expected: '{ "description": "Coffee", "amount": 4.5 }',
     check: (raw) => {
       try {
-        const v = JSON.parse(raw);
-        if (v.description !== "Coffee")
+        const v = JSON.parse(raw.replace(/'/g, '"'));
+        if (String(v.description || "").toLowerCase() !== "coffee")
           return { ok: false, msg: 'description: "Coffee"' };
-        if (v.amount !== 4.5)
-          return { ok: false, msg: 'amount must be number 4.5, not "4.5"' };
+        if (!(Math.abs(Number(v.amount) - 4.5) < 0.001))
+          return { ok: false, msg: "amount should be 4.5" };
         return { ok: true, msg: "JSON checks out." };
       } catch {
         return {
           ok: false,
-          msg: "Invalid JSON (double quotes, no trailing comma).",
+          msg: "Invalid JSON (double quotes, no trailing comma). Or Skip.",
         };
       }
     },
@@ -155,11 +156,13 @@ window.SKILL_CHECK = [
     type: "text",
     prompt:
       "REST: read expense id 3. Type METHOD then path, like GET /api/expenses/3",
+    expected: "GET /api/expenses/3",
     check: (raw) => {
-      const ok = /^GET\s+\/api\/expenses\/3\/?$/i.test(raw.trim());
+      const s = raw.trim().replace(/["'`]/g, "").replace(/\s+/g, " ");
+      const ok = /^GET\s+(?:\/[\w.-]+)*\/expenses\/3\/?$/i.test(s);
       return ok
         ? { ok: true, msg: "Yes." }
-        : { ok: false, msg: "Expected GET /api/expenses/3" };
+        : { ok: false, msg: "Expected GET /api/expenses/3 — or Skip." };
     },
   },
   {

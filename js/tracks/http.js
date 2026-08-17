@@ -98,24 +98,29 @@ window.LEARN_TRACKS.push({
         prompt:
           "Type a JSON object with description Coffee (string), amount 4.5 (number), category Food (string). No trailing comma.",
         placeholder: '{ "description": ... }',
+        expected:
+          '{ "description": "Coffee", "amount": 4.5, "category": "Food" }',
         check: (raw) => {
           let v;
           try {
-            v = JSON.parse(raw);
+            v = JSON.parse(raw.replace(/'/g, '"'));
           } catch {
             return {
               ok: false,
-              msg: "Not valid JSON. Double quotes, no trailing comma.",
+              msg: "Not valid JSON. Double quotes, no trailing comma. Or Skip.",
             };
           }
-          if (v.description !== "Coffee")
+          const desc = String(v.description || "").toLowerCase();
+          const cat = String(v.category || "").toLowerCase();
+          const amt = Number(v.amount);
+          if (desc !== "coffee")
             return { ok: false, msg: "description should be Coffee" };
-          if (v.amount !== 4.5)
+          if (!(Math.abs(amt - 4.5) < 0.001))
             return {
               ok: false,
               msg: "amount should be the number 4.5, not a string",
             };
-          if (v.category !== "Food")
+          if (cat !== "food")
             return { ok: false, msg: "category should be Food" };
           return {
             ok: true,

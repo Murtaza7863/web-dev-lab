@@ -65,13 +65,15 @@ window.LEARN_TRACKS.push({
         prompt:
           "Write a one-line spec for add. Must mention the user/action and the three fields (description, amount, category). Example shape: User can add an expense with …",
         placeholder: "User can …",
+        expected:
+          "User can add an expense with description, amount, and category.",
         check: (raw) => {
           const s = raw.toLowerCase();
-          const hasUser = /user|i can|we can|allow/.test(s);
-          const hasAdd = /add|create|enter|save/.test(s);
-          const hasD = /desc/.test(s);
-          const hasA = /amount|price|cost/.test(s);
-          const hasC = /categor/.test(s);
+          const hasUser = /user|i can|we can|allow|you can/.test(s);
+          const hasAdd = /add|create|enter|save|log|record/.test(s);
+          const hasD = /desc|name|item|title|what/.test(s);
+          const hasA = /amount|price|cost|money|\$/.test(s);
+          const hasC = /categor|type|tag/.test(s);
           if (hasUser && hasAdd && hasD && hasA && hasC) {
             return {
               ok: true,
@@ -80,7 +82,7 @@ window.LEARN_TRACKS.push({
           }
           return {
             ok: false,
-            msg: "Need: who (user), the verb (add/create), and description + amount + category.",
+            msg: "Need: who (user), the verb (add/create), and description + amount + category. Or Skip if the checker is being a jerk.",
           };
         },
       },
@@ -142,14 +144,16 @@ window.LEARN_TRACKS.push({
         prompt:
           "Type the four CRUD letters in order, space-separated, matching Create Read Update Delete.",
         placeholder: "C R U D",
+        expected: "C R U D",
         check: (raw) => {
-          const ok = /^\s*c\s+r\s+u\s+d\s*$/i.test(raw);
+          const letters = raw.toLowerCase().replace(/[^a-z]/g, "");
+          const ok = letters === "crud" || letters === "createreadupdatedelete";
           return ok
             ? {
                 ok: true,
                 msg: "That's the whole genre of 'CRUD app.' Your CLI is 3/4 of it (no Update).",
               }
-            : { ok: false, msg: "Type: C R U D" };
+            : { ok: false, msg: "Type: C R U D  (or just CRUD)" };
         },
       },
     },

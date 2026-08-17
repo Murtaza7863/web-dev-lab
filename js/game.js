@@ -177,6 +177,15 @@ const Game = (() => {
       awardBadge("builder");
   }
 
+  function lessonSkip(lessonId, wordIds) {
+    const first = !Store.isDone(lessonId);
+    Store.complete(lessonId, wordIds);
+    bumpCombo(false);
+    syncBadges();
+    if (first) toast("Skipped the checker — step still cleared", "loot");
+    return { first, xp: 0, combo: 0, skipped: true };
+  }
+
   function lessonWin(lessonId, wordIds) {
     const first = !Store.isDone(lessonId);
     Store.complete(lessonId, wordIds);
@@ -228,6 +237,7 @@ const Game = (() => {
     hud,
     rankFor,
     lessonWin,
+    lessonSkip,
     checkDone,
     hit,
     labPost,

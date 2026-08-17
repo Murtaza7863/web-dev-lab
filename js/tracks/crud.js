@@ -55,12 +55,13 @@ window.LEARN_TRACKS.push({
         prompt:
           "What HTTP method + path would delete expense id 7? Type like: DELETE /api/expenses/7",
         placeholder: "METHOD /path",
+        expected: "DELETE /api/expenses/7",
         check: (raw) => {
-          const s = raw.trim().replace(/\s+/g, " ");
-          const ok = /^DELETE\s+\/api\/expenses\/7\/?$/i.test(s);
+          const s = raw.trim().replace(/["'`]/g, "").replace(/\s+/g, " ");
+          const ok = /^DELETE\s+(?:\/[\w.-]+)*\/expenses\/7\/?$/i.test(s);
           return ok
             ? { ok: true, msg: "Noun in the URL, verb in the method." }
-            : { ok: false, msg: "Expected: DELETE /api/expenses/7" };
+            : { ok: false, msg: "Expected: DELETE /api/expenses/7 — or Skip." };
         },
       },
     },
