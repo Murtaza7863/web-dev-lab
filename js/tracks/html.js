@@ -3,51 +3,34 @@ window.LEARN_TRACKS.push({
   id: "html",
   title: "HTML",
   quest: "The Page",
-  blurb: "Tags that tell the browser what each piece of the page is.",
+  blurb: "Tags are labels. One at a time. The browser uses them to show text.",
   youKnow:
-    "You already labeled data in Java (description, amount, category). HTML labels content for the browser.",
+    "You print with System.out.println. HTML is how a webpage prints — labels around words, no compile.",
   lessons: [
     {
       id: "html-1",
-      title: "What is a tag?",
+      title: "Your first tag: a paragraph",
       words: ["html", "tag", "element"],
       body: `
-        <p>HTML is not Java. It's a <strong>markup language</strong> — you wrap content in <strong>tags</strong> so the browser knows what each piece is.</p>
-        <pre><span class="t">&lt;p&gt;</span><span class="x">Hello world</span><span class="t">&lt;/p&gt;</span></pre>
+        <p>Type this exactly. That's a <strong>tag</strong>:</p>
+<pre><span class="t">&lt;p&gt;</span><span class="x">Hello</span><span class="t">&lt;/p&gt;</span></pre>
         <ul>
-          <li><code>&lt;p&gt;</code> — opening tag</li>
-          <li><code>Hello world</code> — content the user sees</li>
-          <li><code>&lt;/p&gt;</code> — closing tag (note the <code>/</code>)</li>
+          <li><code>&lt;p&gt;</code> — start (p means paragraph)</li>
+          <li><code>Hello</code> — the words you see</li>
+          <li><code>&lt;/p&gt;</code> — stop. The slash means “end”</li>
         </ul>
-        <p>Opening + content + closing = an <strong>element</strong>.</p>
-        <div class="callout java"><strong>Java:</strong> <code>System.out.println("Hello")</code> prints. <code>&lt;p&gt;Hello&lt;/p&gt;</code> displays — no <code>main</code>, no compile.</div>
-        <div class="demo"><div class="demo-label">This page is rendering a real paragraph</div><p>Hello world</p></div>
-        <h2>Rules</h2>
-        <ol>
-          <li>Most tags come in pairs.</li>
-          <li>Closing tags have a slash: <code>&lt;/p&gt;</code></li>
-          <li>Tag names are lowercase.</li>
-        </ol>
+        <div class="callout word"><strong>New word — tag.</strong> The <code>&lt;p&gt;</code> and <code>&lt;/p&gt;</code> wrappers. Not Java. The browser reads them as “this chunk is a paragraph.”</div>
+        <div class="callout word"><strong>New word — element.</strong> The whole sandwich: opening tag + words + closing tag.</div>
+        <div class="callout java"><strong>Java:</strong> <code>System.out.println("Hello")</code> prints in the terminal. <code>&lt;p&gt;Hello&lt;/p&gt;</code> prints on the page. No class. No main.</div>
+        <div class="demo"><div class="demo-label">The browser drawing a real paragraph</div><p>Hello</p></div>
+        <p>Most tags come in pairs. Names are lowercase. That's enough for today.</p>
       `,
       exercise: {
         type: "html",
-        prompt:
-          "Write HTML so the preview shows: a big heading Welcome, a paragraph This is my first HTML exercise., and the word important in bold inside a sentence.",
-        starter:
-          "Welcome\n\nThis is my first HTML exercise.\n\nLearning HTML is important.",
-        checks: [
-          { sel: "h1", text: "Welcome", msg: "Need an <h1> that says Welcome" },
-          {
-            sel: "p",
-            text: "first HTML exercise",
-            msg: "Need a <p> about the first HTML exercise",
-          },
-          {
-            sel: "strong",
-            text: "important",
-            msg: "Wrap important in <strong>",
-          },
-        ],
+        prompt: "Wrap the word Hello in a paragraph tag. Only that.",
+        starter: "Hello",
+        expected: "<p>Hello</p>",
+        checks: [{ sel: "p", text: "Hello", msg: "Need <p>Hello</p>" }],
       },
     },
     {

@@ -339,6 +339,7 @@ code {
 .callout.java { border-left-color: var(--java); }
 .callout.tip { border-left-color: var(--ok); }
 .callout.warn { border-left-color: var(--bad); }
+.callout.word { border-left-color: var(--accent); }
 
 pre {
   background: var(--code);

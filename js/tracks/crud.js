@@ -1,11 +1,11 @@
 window.LEARN_TRACKS = window.LEARN_TRACKS || [];
 window.LEARN_TRACKS.push({
   id: "crud",
-  title: "CRUD + REST",
-  quest: "The Dungeon",
-  blurb: "Create Read Update Delete — your CLI menu, as HTTP.",
+  title: "Add, list, change, delete",
+  quest: "The Four Jobs",
+  blurb: "The same four menu items as your CLI — as messages a page can send.",
   youKnow:
-    "You already built CRUD. Add / view / remove in Main.java is CRUD with a Scanner instead of HTTP.",
+    "Add / view / remove in Main.java. People nickname that CRUD. We'll use the English first.",
   lessons: [
     {
       id: "crud-1",

@@ -1,29 +1,26 @@
 window.LEARN_TRACKS = window.LEARN_TRACKS || [];
 window.LEARN_TRACKS.push({
   id: "http",
-  title: "HTTP, JSON, APIs",
+  title: "Two programs talking",
   quest: "The Call",
-  blurb: "How the browser talks to a backend. fetch, JSON, status codes.",
+  blurb:
+    "Sometimes the page asks another program for data. We'll name the message format when you send one.",
   youKnow:
-    "Your CLI calls methods on ExpenseTracker in-process. A web app often calls a server over HTTP instead.",
+    "Your CLI calls methods on ExpenseTracker in the same program. A website often asks a second program instead.",
   lessons: [
     {
       id: "http-1",
       title: "Client and server",
-      words: ["http", "request", "response", "api"],
+      words: ["http", "request", "response"],
       body: `
         <p>Two programs:</p>
         <ul>
-          <li><strong>Client</strong> — this PWA, running in your browser</li>
-          <li><strong>Server</strong> — Java/Spring (or anything) waiting for requests</li>
+          <li><strong>This page</strong> (also called the client) — running in your browser</li>
+          <li><strong>Another program</strong> (also called the server) — often Java, waiting for questions</li>
         </ul>
-        <p>They talk <strong>HTTP</strong>: the client sends a <strong>request</strong>, the server sends a <strong>response</strong>.</p>
-        <p>An <strong>API</strong> is the agreed shape of those messages: which URLs, which methods, which JSON. Not a library. A contract.</p>
-        <div class="callout java">
-          CLI: <code>tracker.addExpense(e)</code> — same process, a method call.<br>
-          Web: <code>POST /api/expenses</code> with a JSON body — different process, maybe a different machine.
-        </div>
-        <p>GitHub Pages can only host the client. The mock API in this PWA fakes the server so you can practice <code>fetch</code> without installing Spring yet.</p>
+        <div class="callout word"><strong>New word — HTTP.</strong> The envelope those two programs use to send a question and get an answer. You don't need the letters memorized. “A request and a reply” is enough.</div>
+        <p>Your CLI never needed this: <code>tracker.addExpense(e)</code> is a method in the <em>same</em> program. A website often cannot do that — the list lives somewhere else.</p>
+        <p>We will not say API yet. That's just “the list of questions the other program answers.” Later.</p>
       `,
       exercise: {
         type: "choice",

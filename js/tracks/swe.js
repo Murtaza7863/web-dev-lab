@@ -1,19 +1,19 @@
 window.LEARN_TRACKS = window.LEARN_TRACKS || [];
 window.LEARN_TRACKS.push({
   id: "swe",
-  title: "How apps are built",
-  quest: "The Map",
+  title: "How the parts fit",
+  quest: "The Pieces",
   blurb:
-    "Syntax is not shipping. This is the missing chapter: spec, data, verbs, layers, errors.",
+    "You already made a page. This names the jobs an app has — still your expense tracker, still English.",
   youKnow:
-    "You can write classes, loops, if/else. That's ammunition. This quest is the gun: how pieces become a product.",
+    "You can show text in a browser and you can write Java. This quest only names: take input, apply rules, remember, show.",
   lessons: [
     {
       id: "swe-1",
       title: "You can code. That isn't building.",
       words: ["spec"],
       body: `
-        <p>A loop is a tool. An <strong>app</strong> is a machine with four jobs:</p>
+        <p>You can already put words on a page. A loop is still just a tool. An <strong>app</strong> (your tracker) still has four jobs — the same four as your CLI:</p>
         <ol>
           <li><strong>Input</strong> — user types, clicks, or a phone sends data</li>
           <li><strong>Rules</strong> — reject bad amounts, compute totals</li>

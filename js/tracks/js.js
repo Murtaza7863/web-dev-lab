@@ -2,18 +2,19 @@ window.LEARN_TRACKS = window.LEARN_TRACKS || [];
 window.LEARN_TRACKS.push({
   id: "js",
   title: "JavaScript",
-  quest: "The Hands",
+  quest: "The Click",
   blurb:
-    "The programming language the browser runs. This is what makes Add actually add.",
+    "A second language, run by the browser. This is what makes a button actually do something.",
   youKnow:
-    "You already program. JS is a different syntax in a different host (the browser, not the JVM).",
+    "You already program in Java. JavaScript is a different language with a similar-looking name. Annoying, but true.",
   lessons: [
     {
       id: "js-1",
       title: "Java vs JavaScript",
       words: ["javascript"],
       body: `
-        <p>They are not the same language. The name is a 1990s marketing accident.</p>
+        <div class="callout word"><strong>New word — JavaScript.</strong> The language the <em>browser</em> runs. Not Java. The similar name is a 1990s accident.</div>
+        <p>They are not the same language.</p>
         <table class="plain">
           <tr><td>Java</td><td>Compiled, types, JVM. Your CLI.</td></tr>
           <tr><td>JavaScript</td><td>Runs in the browser (and Node). Dynamic types.</td></tr>
@@ -37,17 +38,11 @@ window.LEARN_TRACKS.push({
       exercise: {
         type: "js",
         prompt:
-          "Write function add(a, b) that returns the sum. Write function label(desc, amount) that returns 'Coffee: $4.5' style strings (description + ': $' + amount).",
-        starter:
-          "function add(a, b) {\n  \n}\n\nfunction label(desc, amount) {\n  \n}",
+          "Write function add(a, b) that returns a + b. That's the whole challenge.",
+        starter: "function add(a, b) {\n  \n}",
         tests: [
           { expr: "add(2, 3)", eq: 5, msg: "add(2,3) should be 5" },
           { expr: "add(10, -4)", eq: 6, msg: "add handles negatives" },
-          {
-            expr: "label('Coffee', 4.5)",
-            eq: "Coffee: $4.5",
-            msg: "label('Coffee', 4.5) → 'Coffee: $4.5'",
-          },
         ],
       },
     },

@@ -2,18 +2,19 @@ window.LEARN_TRACKS = window.LEARN_TRACKS || [];
 window.LEARN_TRACKS.push({
   id: "css",
   title: "CSS",
-  quest: "The Skin",
-  blurb:
-    "How the page looks — color, space, layout. HTML is structure; CSS is appearance.",
+  quest: "The Look",
+  blurb: "How the page looks — color, space. The words don't change.",
   youKnow:
-    "You don't style a terminal. CSS is the extra layer the web has that your CLI doesn't.",
+    "Your terminal is one font, one color. CSS is the extra file that paints the page.",
   lessons: [
     {
       id: "css-1",
       title: "CSS is rules",
       words: ["css", "selector"],
       body: `
-        <p>CSS = Cascading Style Sheets. A rule has two parts:</p>
+        <p><strong>CSS</strong> means Cascading Style Sheets — a fussy name for “paint rules.”</p>
+        <div class="callout word"><strong>New word — CSS.</strong> A second file (or box) that says how HTML should look. HTML = the words. CSS = the look.</div>
+        <p>A rule has two parts:</p>
 <pre><span class="t">h1</span> <span class="x">{</span>
   <span class="a">color</span><span class="x">: red;</span>
 <span class="x">}</span></pre>

@@ -3,49 +3,58 @@ const Game = (() => {
   const RANKS = [
     {
       min: 0,
-      name: "Syntax tourist",
-      blurb: "Loops work. Shipping is still a rumor.",
+      name: "Just starting",
+      blurb: "You can write Java. A page is next.",
     },
     {
       min: 36,
-      name: "Tutorial ghost",
-      blurb: "You've seen the words. Time to attach them to an app.",
+      name: "Showed a tag",
+      blurb: "The browser drew something you wrote.",
     },
     {
       min: 96,
-      name: "Map reader",
-      blurb: "Spec, noun, verbs, layers. Costumes come after.",
+      name: "Made it pretty",
+      blurb: "HTML plus a little CSS.",
     },
     {
       min: 180,
-      name: "CRUD adventurer",
-      blurb: "You can move records on purpose.",
+      name: "Made a click",
+      blurb: "A button that does something.",
     },
     {
       min: 300,
-      name: "Stack literate",
-      blurb: "You can say Controller without sweating.",
+      name: "Can name the pieces",
+      blurb: "Input, rules, memory, screen — in English.",
     },
     {
       min: 430,
       name: "Builder",
-      blurb: "You start from data and verbs. Frameworks are optional hats.",
+      blurb: "You can point at the words instead of fearing them.",
     },
   ];
 
   const BADGES = [
-    { id: "first_quest", name: "First blood", hint: "Finish any quest step" },
-    { id: "arena", name: "Walked in", hint: "Finish a placement run" },
+    { id: "first_quest", name: "First step", hint: "Finish any lesson" },
+    { id: "arena", name: "Took the quiz", hint: "Finish the optional quiz" },
+    {
+      id: "window",
+      name: "Opened the window",
+      hint: "Finish First steps",
+    },
     {
       id: "cartographer",
-      name: "Cartographer",
-      hint: "Clear The Map (how apps are built)",
+      name: "Named the pieces",
+      hint: "Clear The Pieces",
     },
     { id: "page_smith", name: "Page smith", hint: "Clear HTML" },
     { id: "stylist", name: "Stylist", hint: "Clear CSS" },
     { id: "hands", name: "Live hands", hint: "Clear JavaScript" },
     { id: "operator", name: "Operator", hint: "Clear HTTP / APIs" },
-    { id: "dungeon", name: "Dungeon clear", hint: "Clear CRUD + REST" },
+    {
+      id: "dungeon",
+      name: "Four jobs",
+      hint: "Clear add / list / change / delete",
+    },
     { id: "spring_tongue", name: "Spring tongue", hint: "Clear Spring Boot" },
     { id: "pocket", name: "Pocket app", hint: "Clear PWA" },
     { id: "lab_rat", name: "Lab rat", hint: "POST something in the Lab" },
@@ -162,6 +171,7 @@ const Game = (() => {
     const all = (window.LEARN_TRACKS || []).flatMap((t) => t.lessons);
     if (doneN >= 1) awardBadge("first_quest");
     if (s.check) awardBadge("arena");
+    if (trackClear("start")) awardBadge("window");
     if (trackClear("swe")) awardBadge("cartographer");
     if (trackClear("html")) awardBadge("page_smith");
     if (trackClear("css")) awardBadge("stylist");

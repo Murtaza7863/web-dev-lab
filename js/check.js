@@ -1,55 +1,36 @@
 window.SKILL_CHECK = [
   {
-    track: "swe",
+    track: "start",
     type: "choice",
-    prompt:
-      "A class with fields and a for-loop, but no input and no save. What is it?",
+    prompt: "This course is being shown by…",
     options: [
-      { id: "a", text: "An app — OOP is basically shipping", ok: false },
-      {
-        id: "b",
-        text: "A piece. An app is input → rules → store → output",
-        ok: true,
-      },
-      { id: "c", text: "A REST API", ok: false },
-    ],
-  },
-  {
-    track: "swe",
-    type: "choice",
-    prompt:
-      "Before Spring / React / folders named controller, you should have…",
-    options: [
-      {
-        id: "a",
-        text: "A spec (who can do what) and the data fields",
-        ok: true,
-      },
-      { id: "b", text: "Docker", ok: false },
-      { id: "c", text: "A blank monorepo so you're 'set up'", ok: false },
-    ],
-  },
-  {
-    track: "swe",
-    type: "choice",
-    prompt: "Scanner + println in Main.java is which layer?",
-    options: [
-      { id: "a", text: "Database", ok: false },
-      { id: "b", text: "UI / adapter (talking to a human)", ok: true },
+      { id: "a", text: "The Java terminal", ok: false },
+      { id: "b", text: "A browser (Chrome, Safari, Edge…)", ok: true },
       { id: "c", text: "Spring Boot", ok: false },
+    ],
+  },
+  {
+    track: "start",
+    type: "choice",
+    prompt: "To put words on a website, the smallest true answer is…",
+    options: [
+      { id: "a", text: "A database", ok: false },
+      { id: "b", text: "A text file the browser can read (HTML)", ok: true },
+      { id: "c", text: "Docker", ok: false },
     ],
   },
   {
     track: "html",
     type: "html",
-    prompt: "From memory: wrap Hello in a paragraph tag. Only that.",
+    prompt: "Wrap Hello in a paragraph tag. Only that.",
     starter: "Hello",
+    expected: "<p>Hello</p>",
     checks: [{ sel: "p", text: "Hello", msg: "Need <p>Hello</p>" }],
   },
   {
     track: "html",
     type: "choice",
-    prompt: "Which one is a closing tag?",
+    prompt: "Which one means “end of paragraph”?",
     options: [
       { id: "a", text: "<p>", ok: false },
       { id: "b", text: "</p>", ok: true },
@@ -59,21 +40,25 @@ window.SKILL_CHECK = [
   {
     track: "css",
     type: "css",
-    prompt: "Make all h1 elements red.",
+    prompt: "Make all h1 elements red. (color: red is fine.)",
     fixture: "<h1>Title</h1>",
-    starter: "",
+    starter: "h1 {\n  \n}",
     checks: [
       { sel: "h1", style: "color", includes: "red", msg: "h1 { color: red; }" },
     ],
   },
   {
-    track: "css",
+    track: "js",
     type: "choice",
-    prompt: 'To style class="item" you write…',
+    prompt: "Java and JavaScript are…",
     options: [
-      { id: "a", text: "item { }", ok: false },
-      { id: "b", text: ".item { }", ok: true },
-      { id: "c", text: "#item { }", ok: false },
+      { id: "a", text: "The same language with two names", ok: false },
+      {
+        id: "b",
+        text: "Different languages. The similar name is an accident.",
+        ok: true,
+      },
+      { id: "c", text: "Both required to show a paragraph", ok: false },
     ],
   },
   {
@@ -82,111 +67,6 @@ window.SKILL_CHECK = [
     prompt: "Write function add(a, b) that returns the sum.",
     starter: "function add(a, b) {\n  \n}",
     tests: [{ expr: "add(2, 3)", eq: 5, msg: "add(2,3) === 5" }],
-  },
-  {
-    track: "js",
-    type: "choice",
-    prompt: 'document.getElementById("total") looks up an element by…',
-    options: [
-      { id: "a", text: "CSS class", ok: false },
-      { id: "b", text: "id attribute", ok: true },
-      { id: "c", text: "tag name", ok: false },
-    ],
-  },
-  {
-    track: "http",
-    type: "choice",
-    prompt: "The browser wants a list of expenses. Typical method?",
-    options: [
-      { id: "a", text: "GET", ok: true },
-      { id: "b", text: "POST", ok: false },
-      { id: "c", text: "DELETE", ok: false },
-    ],
-  },
-  {
-    track: "http",
-    type: "choice",
-    prompt: "HTTP 404 means…",
-    options: [
-      { id: "a", text: "Created", ok: false },
-      { id: "b", text: "That URL / id does not exist", ok: true },
-      {
-        id: "c",
-        text: "The server Java threw a NullPointerException",
-        ok: false,
-      },
-    ],
-  },
-  {
-    track: "http",
-    type: "text",
-    prompt:
-      "Type valid JSON: description Coffee (string), amount 4.5 (number).",
-    placeholder: "{ ... }",
-    expected: '{ "description": "Coffee", "amount": 4.5 }',
-    check: (raw) => {
-      try {
-        const v = JSON.parse(raw.replace(/'/g, '"'));
-        if (String(v.description || "").toLowerCase() !== "coffee")
-          return { ok: false, msg: 'description: "Coffee"' };
-        if (!(Math.abs(Number(v.amount) - 4.5) < 0.001))
-          return { ok: false, msg: "amount should be 4.5" };
-        return { ok: true, msg: "JSON checks out." };
-      } catch {
-        return {
-          ok: false,
-          msg: "Invalid JSON (double quotes, no trailing comma). Or Skip.",
-        };
-      }
-    },
-  },
-  {
-    track: "crud",
-    type: "choice",
-    prompt: "Your CLI menu item 2, Remove Expense, is which CRUD letter?",
-    options: [
-      { id: "c", text: "Create", ok: false },
-      { id: "r", text: "Read", ok: false },
-      { id: "u", text: "Update", ok: false },
-      { id: "d", text: "Delete", ok: true },
-    ],
-  },
-  {
-    track: "crud",
-    type: "text",
-    prompt:
-      "REST: read expense id 3. Type METHOD then path, like GET /api/expenses/3",
-    expected: "GET /api/expenses/3",
-    check: (raw) => {
-      const s = raw.trim().replace(/["'`]/g, "").replace(/\s+/g, " ");
-      const ok = /^GET\s+(?:\/[\w.-]+)*\/expenses\/3\/?$/i.test(s);
-      return ok
-        ? { ok: true, msg: "Yes." }
-        : { ok: false, msg: "Expected GET /api/expenses/3 — or Skip." };
-    },
-  },
-  {
-    track: "spring",
-    type: "choice",
-    prompt: "Which annotation maps a Java method to HTTP GET?",
-    options: [
-      { id: "a", text: "@GetMapping", ok: true },
-      { id: "b", text: "@SpringBootApplication", ok: false },
-      { id: "c", text: "@Override", ok: false },
-    ],
-  },
-  {
-    track: "pwa",
-    type: "choice",
-    prompt: "Can GitHub Pages run your Spring Boot server?",
-    options: [
-      { id: "a", text: "Yes, if it's a PWA", ok: false },
-      {
-        id: "b",
-        text: "No. Pages only serves static files. Spring needs a JVM host.",
-        ok: true,
-      },
-    ],
   },
 ];
 
@@ -223,14 +103,25 @@ window.LEARN_WORDS = {
     term: "Debug loop",
     def: "Reproduce. Name which state is wrong. Make the failure small. Fix that. Don't rewrite the app.",
   },
+  browser: {
+    term: "Browser",
+    def: "Chrome, Safari, Edge. The program that shows websites. You're in one now.",
+  },
+  website: {
+    term: "Website",
+    def: "One or more pages (HTML files) a browser can open. This course is a website.",
+  },
   html: {
     term: "HTML",
-    def: "Markup. Tags that label content for the browser. Not a programming language.",
+    def: "A text file of labels around words, so the browser knows what to draw. Not Java. No compile.",
   },
-  tag: { term: "Tag", def: "<p> and </p>. The punctuation of HTML." },
+  tag: {
+    term: "Tag",
+    def: "<p> means start paragraph. </p> means stop. The slash means end.",
+  },
   element: {
     term: "Element",
-    def: "Opening tag + content + closing tag. One node in the page.",
+    def: "The whole sandwich: <p>Hello</p>. Opening + words + closing.",
   },
   attribute: {
     term: "Attribute",
@@ -238,7 +129,7 @@ window.LEARN_WORDS = {
   },
   css: {
     term: "CSS",
-    def: "Rules for how HTML looks. Selector + declarations.",
+    def: "Paint rules. HTML is the words. CSS is color, size, spacing.",
   },
   selector: {
     term: "Selector",
@@ -254,7 +145,7 @@ window.LEARN_WORDS = {
   },
   javascript: {
     term: "JavaScript",
-    def: "Language the browser runs. Not Java. Makes the page change after load.",
+    def: "A different language the browser runs. Not Java. The similar name is an accident.",
   },
   dom: {
     term: "DOM",
@@ -270,7 +161,7 @@ window.LEARN_WORDS = {
   },
   http: {
     term: "HTTP",
-    def: "Request/response protocol. Method + URL in, status + body out.",
+    def: "The envelope two programs use: a question and an answer. “A request and a reply” is enough.",
   },
   request: {
     term: "Request",

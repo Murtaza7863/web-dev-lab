@@ -2,9 +2,9 @@ window.LEARN_TRACKS = window.LEARN_TRACKS || [];
 window.LEARN_TRACKS.push({
   id: "spring",
   title: "Spring Boot",
-  quest: "The Other Process",
+  quest: "The Other Program",
   blurb:
-    "Java that waits for HTTP instead of Scanner. Your tracker, as a server.",
+    "Java that waits for the page to call it. Same expense rules as your CLI. Do this last-ish.",
   youKnow:
     "Expense.java can stay. Main.java's menu becomes a Controller. ArrayList + file becomes a Repository.",
   lessons: [

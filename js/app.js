@@ -1,9 +1,10 @@
 (() => {
   const TRACK_ORDER = [
-    "swe",
+    "start",
     "html",
     "css",
     "js",
+    "swe",
     "http",
     "crud",
     "spring",
@@ -90,7 +91,7 @@
         <a href="#/" class="${tab === "home" ? "on" : ""}">${ICONS.home}Home</a>
         <a href="#/learn" class="${tab === "learn" ? "on" : ""}">${ICONS.learn}Quests</a>
         <a href="#/lab" class="${tab === "lab" ? "on" : ""}">${ICONS.lab}Lab</a>
-        <a href="#/words" class="${tab === "words" ? "on" : ""}">${ICONS.words}Loot</a>
+        <a href="#/words" class="${tab === "words" ? "on" : ""}">${ICONS.words}Words</a>
       </nav>`;
   }
 
@@ -214,15 +215,15 @@
       ${install}
       <section class="hero">
         <span class="badge">${esc(g.rank.name)}</span>
-        <h1>You can code. This is how you build.</h1>
-        <p>Loops and classes are ammo. An app is input → rules → store → output. Your CLI already is one. The quests name the web costumes (HTML, APIs, Spring) so you stop vibe-coding words you can't point at.</p>
+        <h1>Start with a page. Names come later.</h1>
+        <p>You can write Java. A website is files a browser shows. We'll do one small thing at a time — a tag, then a color, then a click. Words like API and Spring wait until you can point at them.</p>
         <div class="row">
-          <a class="btn" href="#/check/1" id="start-check">${check ? "Retake placement" : "Placement run"}</a>
           ${
             nq
-              ? `<a class="btn ghost" href="#/learn/${nq.track.id}/${nq.lesson.id}">Next: ${esc(nq.lesson.title)}</a>`
-              : `<a class="btn ghost" href="#/lab">Dungeon is open</a>`
+              ? `<a class="btn" href="#/learn/${nq.track.id}/${nq.lesson.id}">Start here: ${esc(nq.lesson.title)}</a>`
+              : `<a class="btn" href="#/lab">Open the playground</a>`
           }
+          <a class="btn ghost" href="#/check/1" id="start-check">${check ? "Retake quiz" : "Optional quiz"}</a>
           ${lastLink}
         </div>
       </section>
@@ -237,12 +238,12 @@
           : ""
       }
       ${pipelineStrip(nq ? nq.track.id : "pwa")}
-      ${check ? renderCheckSummary(check) : `<div class="callout warn"><strong>Placement is from memory.</strong> Wrong answers still advance — that's the scout, not a boss you grind. Start with The Map if the words "spec / state / slice" feel fuzzy.</div>`}
+      ${check ? renderCheckSummary(check) : `<div class="callout tip"><strong>Skip the quiz if you want.</strong> Start the first lesson. New words get an orange box. Skip exists if a checker is picky.</div>`}
       <h2>Badges</h2>
       ${renderBadges()}
       <h2>Quest line</h2>
       ${questPathHtml()}
-      <div class="callout java"><strong>GitHub Pages</strong> hosts this client. Spring cannot run here. The Lab is a fake dungeon API so fetch/CRUD are real.</div>
+      <div class="callout java">This site is just files. The playground (Lab) comes after you can make a page. You do not need Spring to start.</div>
       <p class="sub" style="color:var(--muted);font-family:system-ui;font-size:0.85rem">Classic HTML files: <a href="lessons/01-what-is-a-tag.html">lessons/</a>. <button class="btn ghost" id="reset-progress" type="button">Reset save</button></p>
     `,
     );
@@ -273,7 +274,7 @@
         return `<div class="score-row"><span>${esc(k)}</span><div class="bar"><i style="width:${pct}%"></i></div><span>${pct}%</span></div>`;
       })
       .join("");
-    const weak = (check.weak || []).join(", ") || "none — go punch the Lab";
+    const weak = (check.weak || []).join(", ") || "none — keep going";
     return `<div class="callout tip"><strong>Last placement.</strong> Soft spots: ${esc(weak)}.<div class="score-grid">${rows}</div></div>`;
   }
 
@@ -301,9 +302,9 @@
     app.innerHTML = shell(
       "learn",
       `
-      <span class="badge">The pipeline</span>
-      <h1>One tracker. Eight layers. This order.</h1>
-      <p>Plan → structure → look → clicks → network → CRUD names → Java server → ship. Each quest is the next layer of the same Add Expense click. Skip ahead and the words stay fog.</p>
+      <span class="badge">One step at a time</span>
+      <h1>Page first. Fancy words later.</h1>
+      <p>You already code in Java. Do these in order. If a word is new, the lesson boxes it. Use Skip if a checker nags.</p>
       ${pipelineStrip(nextQuest() ? nextQuest().track.id : "pwa")}
       ${questPathHtml()}
     `,
@@ -756,8 +757,8 @@
         ${fwd}
       </div>
       <p class="q-num">Room ${i + 1} / ${qs.length} · ${esc(q.track)}</p>
-      <h1>Placement run</h1>
-      <p>From memory. Use ← to go back a room and change an answer. Wrong still records.</p>
+      <h1>Optional quiz</h1>
+      <p>Skip any question. Wrong still advances. This is a peek, not a grade.</p>
       <section class="ex" id="ex"></section>
     `,
     );
@@ -810,7 +811,7 @@
       checkScored = true;
       Game.checkDone(had);
     }
-    const start = weak[0] || "swe";
+    const start = weak[0] || "start";
     const startTitle =
       (tracks().find((t) => t.id === start) || {}).title || start;
     const lastQ = Math.min(checkAnswers.length, qs.length);
@@ -821,8 +822,8 @@
         <a href="#/check/${lastQ}">← Last room</a>
         <a href="#/">Camp →</a>
       </div>
-      <span class="badge">Scout complete</span>
-      <h1>${weak.length ? "Soft spots found. That's the useful part." : "Clean run. Now build in the Lab anyway."}</h1>
+      <span class="badge">Quiz done</span>
+      <h1>${weak.length ? "A few soft spots. Start the first lesson anyway." : "Nice. Now do First steps even if this felt easy."}</h1>
       ${renderCheckSummary({ scores, weak })}
       <div class="row">
         <a class="btn" href="#/learn/${start}">Quest: ${esc(startTitle)}</a>
@@ -843,9 +844,9 @@
     app.innerHTML = shell(
       "lab",
       `
-      <span class="badge">Dungeon · mock REST</span>
+      <span class="badge">Playground</span>
       <h1>The Lab</h1>
-      <p>Same verbs as your CLI, wearing HTTP. POST to create, GET to read, PUT to poke amount, DELETE to yeet. The log is the spellbook — read it.</p>
+      <p>Come back here after you can make a page and a click. Same add / list / delete as your CLI, as messages. The log at the right is “what just got sent.”</p>
       <div class="lab-desk">
         <div>
           <form class="ex" id="lab-form">
@@ -952,9 +953,9 @@
     app.innerHTML = shell(
       "words",
       `
-      <span class="badge">Loot — earned, not googled</span>
-      <h1>Buzzwords you can actually point at</h1>
-      <p>Grey = still fog. Color = you finished the quest that uses it. Tap a live one. If you can explain it with the expense tracker, it's yours.</p>
+      <span class="badge">Words — only after you meet them</span>
+      <h1>A glossary you grow into</h1>
+      <p>Grey means you haven't unlocked it yet. That's normal. Color means you finished the lesson that uses it. Tap a live one.</p>
       <div class="words" id="word-list">
         ${on.map(([id, w]) => `<button type="button" class="word on" data-id="${esc(id)}">${esc(w.term)}</button>`).join("")}
         ${off.map(([, w]) => `<span class="word">${esc(w.term)}</span>`).join("")}
