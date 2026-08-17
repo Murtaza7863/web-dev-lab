@@ -19,8 +19,10 @@
   };
 
   let deferredInstall = null;
-  let checkIndex = 0;
   let checkAnswers = [];
+  let checkTimer = 0;
+  let checkScored = false;
+  let unsubLab = null;
 
   const app = document.getElementById("app");
 
@@ -49,7 +51,12 @@
     const raw = (location.hash || "#/").replace(/^#/, "") || "/";
     const parts = raw.split("/").filter(Boolean);
     if (!parts.length) return { name: "home" };
-    if (parts[0] === "check") return { name: "check" };
+    if (parts[0] === "check") {
+      if (parts[1] === "done") return { name: "check-done" };
+      const q = parseInt(parts[1], 10);
+      if (Number.isFinite(q) && q > 0) return { name: "check", q };
+      return { name: "check", q: 1 };
+    }
     if (parts[0] === "lab") return { name: "lab" };
     if (parts[0] === "words") return { name: "words" };
     if (parts[0] === "learn" && parts[1] && parts[2]) {
@@ -96,8 +103,14 @@
         return `<a class="pipe-step ${on}" href="#/learn/${s.id}" title="${esc(s.because)}"><b>${esc(s.layer)}</b><span>${esc(s.quest)}</span></a>`;
       })
       .join("");
+    const idx = stages.findIndex((s) => s.id === activeId);
+    const prevS = idx > 0 ? stages[idx - 1] : null;
     const why = cur
-      ? `<p class="pipe-why"><strong>This layer:</strong> ${esc(cur.because)}${cur.next ? ` <strong>Next:</strong> ${esc(cur.next)}` : ""}</p>`
+      ? `<p class="pipe-why">${
+          prevS ? `<strong>Back:</strong> ${esc(prevS.quest)}. ` : ""
+        }<strong>This layer:</strong> ${esc(cur.because)}${
+          cur.next ? ` <strong>Next:</strong> ${esc(cur.next)}` : ""
+        }</p>`
       : "";
     return `<div class="pipe">${steps}</div>${why}`;
   }
@@ -106,6 +119,33 @@
     const i = TRACK_ORDER.indexOf(trackId);
     if (i < 0) return null;
     return tracks()[i + 1] || null;
+  }
+
+  function prevTrack(trackId) {
+    const i = TRACK_ORDER.indexOf(trackId);
+    if (i <= 0) return null;
+    return tracks()[i - 1] || null;
+  }
+
+  function flatSteps() {
+    return tracks().flatMap((t) =>
+      t.lessons.map((l) => ({ track: t, lesson: l })),
+    );
+  }
+
+  function neighbors(trackId, lessonId) {
+    const list = flatSteps();
+    const i = list.findIndex(
+      (s) => s.track.id === trackId && s.lesson.id === lessonId,
+    );
+    return {
+      prev: i > 0 ? list[i - 1] : null,
+      next: i >= 0 && i < list.length - 1 ? list[i + 1] : null,
+    };
+  }
+
+  function lessonHref(step) {
+    return `#/learn/${step.track.id}/${step.lesson.id}`;
   }
 
   function questName(t) {
@@ -158,6 +198,15 @@
     }
 
     const nq = nextQuest();
+    const last = Store.get().last;
+    let lastLink = "";
+    if (last && last.trackId && last.lessonId) {
+      const lt = tracks().find((x) => x.id === last.trackId);
+      const ll = lt && lt.lessons.find((x) => x.id === last.lessonId);
+      if (ll && (!nq || nq.lesson.id !== ll.id)) {
+        lastLink = `<a class="btn ghost" href="#/learn/${last.trackId}/${last.lessonId}">Back to: ${esc(ll.title)}</a>`;
+      }
+    }
     const g = Game.hud();
     app.innerHTML = shell(
       "home",
@@ -168,12 +217,13 @@
         <h1>You can code. This is how you build.</h1>
         <p>Loops and classes are ammo. An app is input → rules → store → output. Your CLI already is one. The quests name the web costumes (HTML, APIs, Spring) so you stop vibe-coding words you can't point at.</p>
         <div class="row">
-          <a class="btn" href="#/check">${check ? "Retake placement" : "Placement run"}</a>
+          <a class="btn" href="#/check/1" id="start-check">${check ? "Retake placement" : "Placement run"}</a>
           ${
             nq
               ? `<a class="btn ghost" href="#/learn/${nq.track.id}/${nq.lesson.id}">Next: ${esc(nq.lesson.title)}</a>`
               : `<a class="btn ghost" href="#/lab">Dungeon is open</a>`
           }
+          ${lastLink}
         </div>
       </section>
       ${
@@ -198,6 +248,13 @@
     );
 
     bindInstall();
+    const start = document.getElementById("start-check");
+    if (start) {
+      start.onclick = (e) => {
+        e.preventDefault();
+        startCheck();
+      };
+    }
     const reset = document.getElementById("reset-progress");
     if (reset) {
       reset.onclick = () => {
@@ -266,10 +323,23 @@
         </a>`;
       })
       .join("");
+    const prevT = prevTrack(t.id);
+    const nxtT = nextTrack(t.id);
     app.innerHTML = shell(
       "learn",
       `
-      <a href="#/learn">← Quest log</a>
+      <div class="lesson-nav top">
+        ${
+          prevT
+            ? `<a href="#/learn/${prevT.id}">← ${esc(questName(prevT))}</a>`
+            : `<a href="#/learn">← Quest log</a>`
+        }
+        ${
+          nxtT
+            ? `<a href="#/learn/${nxtT.id}">${esc(questName(nxtT))} →</a>`
+            : `<a href="#/lab">Lab →</a>`
+        }
+      </div>
       ${pipelineStrip(t.id)}
       <span class="badge">${esc(questName(t))}</span>
       <h1>${esc(t.title)}</h1>
@@ -285,22 +355,15 @@
     );
   }
 
-  function lessonNav(track, index) {
-    const prev = track.lessons[index - 1];
-    const next = track.lessons[index + 1];
-    const nxtTrack = nextTrack(track.id);
+  function lessonNav(track, index, top) {
+    const { prev, next } = neighbors(track.id, track.lessons[index].id);
     const back = prev
-      ? `<a href="#/learn/${track.id}/${prev.id}">← ${esc(prev.title)}</a>`
-      : `<a href="#/learn/${track.id}">← ${esc(track.title)}</a>`;
-    let fwd;
-    if (next) {
-      fwd = `<a href="#/learn/${track.id}/${next.id}">${esc(next.title)} →</a>`;
-    } else if (nxtTrack) {
-      fwd = `<a href="#/learn/${nxtTrack.id}/${nxtTrack.lessons[0].id}">Next layer: ${esc(questName(nxtTrack))} →</a>`;
-    } else {
-      fwd = `<a href="#/lab">Capstone: the Lab →</a>`;
-    }
-    return `<div class="lesson-nav">${back}${fwd}</div>`;
+      ? `<a href="${lessonHref(prev)}">← ${esc(prev.lesson.title)}</a>`
+      : `<a href="#/learn/${track.id}">← ${esc(questName(track))}</a>`;
+    const fwd = next
+      ? `<a href="${lessonHref(next)}">${esc(next.lesson.title)} →</a>`
+      : `<a href="#/lab">Capstone: the Lab →</a>`;
+    return `<div class="lesson-nav${top ? " top" : ""}">${back}${fwd}</div>`;
   }
 
   function renderLesson(trackId, lessonId) {
@@ -310,9 +373,14 @@
       : -1;
     const lesson = index >= 0 ? track.lessons[index] : null;
     if (!lesson) return renderTrack(trackId);
+    Store.update((s) => {
+      s.last = { trackId, lessonId };
+      return s;
+    });
     app.innerHTML = shell(
       "learn",
       `
+      ${lessonNav(track, index, true)}
       <span class="badge">${esc(questName(track))} · ${index + 1}/${track.lessons.length}</span>
       ${pipelineStrip(track.id)}
       <h1>${esc(lesson.title)}</h1>
@@ -320,7 +388,7 @@
         <article class="lesson-body">${lesson.body}</article>
         <section class="ex" id="ex"></section>
       </div>
-      ${lessonNav(track, index)}
+      ${lessonNav(track, index, false)}
     `,
     );
     mountExercise(
@@ -328,22 +396,19 @@
       lesson.exercise,
       () => {
         const win = Game.lessonWin(lesson.id, lesson.words);
-        const next = track.lessons[index + 1];
-        const nxtTrack = nextTrack(track.id);
+        const n = neighbors(track.id, lesson.id);
         const msg = document.createElement("p");
         msg.className = "msg ok";
         const xpBit = win.first
           ? `+${win.xp} XP. `
           : "Already cleared — combo still counts. ";
-        let more;
-        if (next) {
-          more = `<a href="#/learn/${track.id}/${next.id}">Next step →</a>`;
-        } else if (nxtTrack) {
-          more = `${esc(questName(track))} cleared. <a href="#/learn/${nxtTrack.id}/${nxtTrack.lessons[0].id}">Next layer: ${esc(questName(nxtTrack))} →</a>`;
-        } else {
-          more = `Pipeline complete. <a href="#/lab">Run it in the Lab</a>.`;
-        }
-        msg.innerHTML = xpBit + more;
+        const back = n.prev
+          ? `<a href="${lessonHref(n.prev)}">← Back</a> `
+          : "";
+        const more = n.next
+          ? `<a href="${lessonHref(n.next)}">Next step →</a>`
+          : `<a href="#/lab">Run it in the Lab</a>`;
+        msg.innerHTML = xpBit + back + more;
         document.getElementById("ex").appendChild(msg);
       },
       () => Game.hit(false),
@@ -497,6 +562,7 @@
           ex,
           codeEl,
           root.querySelector("#" + previewId),
+          root,
         );
         msg.innerHTML = `<div class="msg ${result.ok ? "ok" : "bad"}">${esc(result.msg)}${ex.why && result.ok ? " " + esc(ex.why) : ""}</div>`;
         if (result.ok) {
@@ -518,9 +584,11 @@
     runBtn.onclick = run;
   }
 
-  async function evaluate(ex, codeEl, preview) {
+  async function evaluate(ex, codeEl, preview, root) {
     if (ex.type === "choice") {
-      const picked = document.querySelector('input[name="choice"]:checked');
+      const picked = (root || document).querySelector(
+        'input[name="choice"]:checked',
+      );
       if (!picked) return { ok: false, msg: "Pick one." };
       const opt = ex.options.find((o) => o.id === picked.value);
       if (opt && opt.ok) return { ok: true, msg: ex.why || "Correct." };
@@ -579,47 +647,98 @@
     return { ok: false, msg: "Unknown exercise type" };
   }
 
-  function renderCheck() {
+  function startCheck() {
+    checkAnswers = [];
+    checkScored = false;
+    clearTimeout(checkTimer);
+    if ((location.hash || "") === "#/check/1") renderCheckAt(0);
+    else location.hash = "#/check/1";
+  }
+
+  function scheduleCheckAdvance(nextI, ms) {
+    clearTimeout(checkTimer);
     const qs = window.SKILL_CHECK;
-    if (checkIndex === 0 && checkAnswers.length === 0) {
-      /* start */
-    }
-    if (checkIndex >= qs.length) return finishCheck();
-    const q = qs[checkIndex];
+    const dest = nextI >= qs.length ? "#/check/done" : `#/check/${nextI + 1}`;
+    checkTimer = setTimeout(() => {
+      location.hash = dest;
+    }, ms);
+  }
+
+  function recordCheck(i, track, ok) {
+    checkAnswers[i] = { track, ok };
+    const qs = window.SKILL_CHECK;
+    const filled = qs.every((_, idx) => checkAnswers[idx]);
+    scheduleCheckAdvance(filled ? qs.length : i + 1, ok ? 350 : 900);
+  }
+
+  function renderCheck() {
+    const r = parseRoute();
+    const qs = window.SKILL_CHECK || [];
+    const i = Math.max(0, (r.q || 1) - 1);
+    if (i >= qs.length) return finishCheck();
+    renderCheckAt(i);
+  }
+
+  function renderCheckAt(i) {
+    const qs = window.SKILL_CHECK;
+    if (i >= qs.length) return finishCheck();
+    const q = qs[i];
+    const prevHref = i > 0 ? `#/check/${i}` : "#/";
+    const prevLabel = i > 0 ? `← Room ${i}` : "← Camp";
+    const fwd =
+      checkAnswers[i] && i + 1 < qs.length
+        ? `<a href="#/check/${i + 2}">Room ${i + 2} →</a>`
+        : checkAnswers[i]
+          ? `<a href="#/check/done">Results →</a>`
+          : `<span class="q-num">Room ${i + 1} / ${qs.length}</span>`;
     app.innerHTML = shell(
       "home",
       `
-      <p class="q-num">Room ${checkIndex + 1} / ${qs.length} · ${esc(q.track)}</p>
+      <div class="lesson-nav top">
+        <a href="${prevHref}" id="check-back">${prevLabel}</a>
+        ${fwd}
+      </div>
+      <p class="q-num">Room ${i + 1} / ${qs.length} · ${esc(q.track)}</p>
       <h1>Placement run</h1>
-      <p>From memory. Wrong still advances. This is a scout, not a grade you hide from.</p>
+      <p>From memory. Use ← to go back a room and change an answer. Wrong still records.</p>
       <section class="ex" id="ex"></section>
     `,
     );
+    const back = document.getElementById("check-back");
+    if (back) {
+      back.addEventListener("click", () => clearTimeout(checkTimer));
+    }
     mountExercise(
       document.getElementById("ex"),
       q,
       () => {
         Game.hit(true);
-        checkAnswers.push({ track: q.track, ok: true });
-        checkIndex += 1;
-        setTimeout(renderCheck, 350);
+        recordCheck(i, q.track, true);
       },
       () => {
         Game.hit(false);
-        checkAnswers.push({ track: q.track, ok: false });
-        checkIndex += 1;
-        setTimeout(renderCheck, 900);
+        recordCheck(i, q.track, false);
       },
       { advanceOnFail: true },
     );
   }
 
   function finishCheck() {
+    const qs = window.SKILL_CHECK || [];
+    if (!checkAnswers.some((a) => a && a.track)) {
+      location.hash = "#/check/1";
+      return;
+    }
     const scores = {};
     for (const a of checkAnswers) {
+      if (!a || !a.track) continue;
       scores[a.track] = scores[a.track] || { ok: 0, n: 0 };
       scores[a.track].n += 1;
       if (a.ok) scores[a.track].ok += 1;
+    }
+    if (!Object.keys(scores).length) {
+      location.hash = "#/check/1";
+      return;
     }
     const weak = Object.entries(scores)
       .filter(([, v]) => v.ok / v.n < 0.7)
@@ -630,24 +749,37 @@
       s.check = { at: Date.now(), scores, weak };
       return s;
     });
-    Game.checkDone(had);
-    checkIndex = 0;
-    checkAnswers = [];
+    if (!checkScored) {
+      checkScored = true;
+      Game.checkDone(had);
+    }
     const start = weak[0] || "swe";
     const startTitle =
       (tracks().find((t) => t.id === start) || {}).title || start;
+    const lastQ = Math.min(checkAnswers.length, qs.length);
     app.innerHTML = shell(
       "home",
       `
+      <div class="lesson-nav top">
+        <a href="#/check/${lastQ}">← Last room</a>
+        <a href="#/">Camp →</a>
+      </div>
       <span class="badge">Scout complete</span>
       <h1>${weak.length ? "Soft spots found. That's the useful part." : "Clean run. Now build in the Lab anyway."}</h1>
       ${renderCheckSummary({ scores, weak })}
       <div class="row">
         <a class="btn" href="#/learn/${start}">Quest: ${esc(startTitle)}</a>
-        <a class="btn ghost" href="#/">Camp</a>
+        <a class="btn ghost" href="#/" id="start-check">Retake</a>
       </div>
     `,
     );
+    const retake = document.getElementById("start-check");
+    if (retake) {
+      retake.onclick = (e) => {
+        e.preventDefault();
+        startCheck();
+      };
+    }
   }
 
   function renderLab() {
@@ -682,7 +814,7 @@
     );
 
     const logEl = document.getElementById("lab-log");
-    MockApi.subscribe((entry) => {
+    unsubLab = MockApi.subscribe((entry) => {
       const line =
         `${entry.method} ${entry.path} → ${entry.status}` +
         (entry.request ? "  req " + JSON.stringify(entry.request) : "") +
@@ -806,15 +938,14 @@
     }
   }
 
-  let lastRoute = "";
-
   function render() {
-    const r = parseRoute();
-    if (r.name === "check" && lastRoute !== "check") {
-      checkIndex = 0;
-      checkAnswers = [];
+    clearTimeout(checkTimer);
+    if (unsubLab) {
+      unsubLab();
+      unsubLab = null;
     }
-    lastRoute = r.name;
+    const r = parseRoute();
+    if (r.name === "check-done") return finishCheck();
     if (r.name === "check") return renderCheck();
     if (r.name === "learn") return renderLearn();
     if (r.name === "track") return renderTrack(r.trackId);
@@ -825,6 +956,40 @@
   }
 
   window.addEventListener("hashchange", render);
+  window.addEventListener("keydown", (e) => {
+    if (e.defaultPrevented || e.metaKey || e.ctrlKey || e.altKey) return;
+    const tag = (e.target && e.target.tagName) || "";
+    if (/^(INPUT|TEXTAREA|SELECT)$/.test(tag)) return;
+    if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+    const r = parseRoute();
+    if (r.name === "lesson") {
+      const n = neighbors(r.trackId, r.lessonId);
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        location.hash = n.prev ? lessonHref(n.prev) : `#/learn/${r.trackId}`;
+      } else {
+        e.preventDefault();
+        location.hash = n.next ? lessonHref(n.next) : "#/lab";
+      }
+      return;
+    }
+    if (r.name === "check" && e.key === "ArrowLeft") {
+      e.preventDefault();
+      location.hash = r.q > 1 ? `#/check/${r.q - 1}` : "#/";
+    }
+    if (r.name === "check-done" && e.key === "ArrowLeft") {
+      e.preventDefault();
+      location.hash = `#/check/${window.SKILL_CHECK.length}`;
+    }
+    if (r.name === "track") {
+      const t =
+        e.key === "ArrowLeft" ? prevTrack(r.trackId) : nextTrack(r.trackId);
+      if (t) {
+        e.preventDefault();
+        location.hash = `#/learn/${t.id}`;
+      }
+    }
+  });
   window.addEventListener("beforeinstallprompt", (e) => {
     e.preventDefault();
     deferredInstall = e;

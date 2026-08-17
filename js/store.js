@@ -11,6 +11,7 @@ const Store = (() => {
     bestCombo: 0,
     badges: {},
     labPosts: 0,
+    last: null,
   });
 
   function load() {
