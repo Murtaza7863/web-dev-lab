@@ -49,6 +49,11 @@ const Game = (() => {
     { id: "page_smith", name: "Page smith", hint: "Clear HTML" },
     { id: "stylist", name: "Stylist", hint: "Clear CSS" },
     { id: "hands", name: "Live hands", hint: "Clear JavaScript" },
+    {
+      id: "git_hands",
+      name: "Can read a commit",
+      hint: "Clear Git and GitHub",
+    },
     { id: "operator", name: "Operator", hint: "Clear HTTP / APIs" },
     {
       id: "dungeon",
@@ -179,6 +184,7 @@ const Game = (() => {
     if (trackClear("html")) awardBadge("page_smith");
     if (trackClear("css")) awardBadge("stylist");
     if (trackClear("js")) awardBadge("hands");
+    if (trackClear("git")) awardBadge("git_hands");
     if (trackClear("http")) awardBadge("operator");
     if (trackClear("crud")) awardBadge("dungeon");
     if (trackClear("spring")) awardBadge("spring_tongue");

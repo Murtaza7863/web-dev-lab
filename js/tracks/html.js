@@ -123,6 +123,7 @@ window.LEARN_TRACKS.push({
         type: "html",
         prompt: "An h2 Notes, the word Ada inside em, and Hi inside strong.",
         starter: "Notes\nAda Hi",
+        expected: "<h2>Notes</h2>\n<em>Ada</em>\n<strong>Hi</strong>",
         checks: [
           { sel: "h2", text: "Notes", msg: "Need <h2>Notes</h2>" },
           { sel: "em", text: "Ada", msg: "Wrap Ada in <em>" },
@@ -197,6 +198,7 @@ window.LEARN_TRACKS.push({
         type: "html",
         prompt: "A ul with exactly two li rows: Apples and Bread.",
         starter: "Apples\nBread",
+        expected: "<ul>\n  <li>Apples</li>\n  <li>Bread</li>\n</ul>",
         checks: [
           { sel: "ul", msg: "Need a <ul>" },
           {
@@ -306,6 +308,8 @@ window.LEARN_TRACKS.push({
         type: "html",
         prompt: "A div.card containing two spans: Ada and Hi",
         starter: "Ada Hi",
+        expected:
+          '<div class="card">\n  <span>Ada</span>\n  <span>Hi</span>\n</div>',
         checks: [
           { sel: "div.card", msg: 'Need <div class="card">' },
           {

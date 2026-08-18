@@ -674,6 +674,16 @@ table.plain td { padding: 0.5rem 0.3rem; border-bottom: 1px solid var(--line); v
   box-shadow: var(--shadow);
 }
 
+.part-label {
+  margin: 1.15rem 0 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.part-block:first-child .part-label { margin-top: 0.35rem; }
+
 .quest-path {
   display: grid;
   gap: 0.45rem;

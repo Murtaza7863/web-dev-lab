@@ -35,6 +35,7 @@ window.LEARN_TRACKS.push({
         prompt: "Make every h1 red (color: red is fine).",
         fixture: "<h1>Hello</h1><p>Not a heading</p>",
         starter: "h1 {\n  \n}",
+        expected: "h1 {\n  color: red;\n}",
         checks: [
           {
             sel: "h1",
@@ -67,6 +68,8 @@ window.LEARN_TRACKS.push({
           "Make .name bold (font-weight: bold) and #hello the color navy.",
         fixture: '<p><span class="name">Ada</span></p><p id="hello">Hi</p>',
         starter: ".name {\n\n}\n#hello {\n\n}",
+        expected:
+          ".name {\n  font-weight: bold;\n}\n#hello {\n  color: navy;\n}",
         checks: [
           {
             sel: ".name",
@@ -97,11 +100,10 @@ window.LEARN_TRACKS.push({
         </ol>
         <div class="callout word"><strong>New word — box model.</strong> Content + padding + border + margin. If a layout looks “too tight” or “too far from the next thing,” you are usually missing padding or margin.</div>
 <pre><span class="t">.card</span> <span class="x">{</span>
-  <span class="a">padding</span><span class="x">: 12px;</span>
-  <span class="a">margin</span><span class="x">: 8px;</span>
-  <span class="a">border</span><span class="x">: 1px solid black;</span>
+  <span class="a">padding</span><span class="x">: 16px;</span>
+  <span class="a">border</span><span class="x">: 2px solid black;</span>
 <span class="x">}</span></pre>
-        <p><code>12px</code> means 12 pixels — a pixel is one dot on the screen. <code>border: 1px solid black</code> is a shortcut: thickness, style, color in one line.</p>
+        <p><code>16px</code> means 16 pixels — a pixel is one dot on the screen. <code>border: 2px solid black</code> is a shortcut: thickness, style, color in one line.</p>
         <p>Padding is “space inside the card.” Margin is “space between cards.” Mixing them up is normal at first. Change one, look at the preview, then the other.</p>
       `,
       exercise: {
@@ -109,6 +111,7 @@ window.LEARN_TRACKS.push({
         prompt: "Give .card 16px padding and a 2px solid black border.",
         fixture: '<div class="card">Hi</div>',
         starter: ".card {\n\n}",
+        expected: ".card {\n  padding: 16px;\n  border: 2px solid black;\n}",
         checks: [
           {
             sel: ".card",
@@ -150,6 +153,8 @@ window.LEARN_TRACKS.push({
         prompt: "Make .row a flex container with space-between.",
         fixture: '<div class="row"><span>Ada</span><span>Hi</span></div>',
         starter: ".row {\n\n}",
+        expected:
+          ".row {\n  display: flex;\n  justify-content: space-between;\n}",
         checks: [
           {
             sel: ".row",
@@ -194,6 +199,8 @@ window.LEARN_TRACKS.push({
           "Style .card as flex, space-between, 12px padding, and a bottom border 1px solid #ccc.",
         fixture: '<div class="card"><span>Ada</span><span>Hi</span></div>',
         starter: ".card {\n\n}",
+        expected:
+          ".card {\n  display: flex;\n  justify-content: space-between;\n  padding: 12px;\n  border-bottom: 1px solid #ccc;\n}",
         checks: [
           { sel: ".card", style: "display", includes: "flex", msg: "flex" },
           {
@@ -234,6 +241,7 @@ window.LEARN_TRACKS.push({
         prompt: "Make .chip display: inline-block with 8px padding.",
         fixture: '<span class="chip">Hi</span>',
         starter: ".chip {\n\n}",
+        expected: ".chip {\n  display: inline-block;\n  padding: 8px;\n}",
         checks: [
           {
             sel: ".chip",

@@ -257,7 +257,39 @@ window.LEARN_WORDS = {
   },
   git: {
     term: "Git",
-    def: "Timeline of source files. commit = snapshot. push = send to GitHub. Pages deploys from that.",
+    def: "A timeline of source files on your computer. commit = snapshot. Not GitHub (that is a host).",
+  },
+  commit: {
+    term: "commit",
+    def: "One snapshot on the Git timeline, with a message. Local until you push.",
+  },
+  push: {
+    term: "push",
+    def: "git push: send commits you already made to GitHub (usually origin).",
+  },
+  github: {
+    term: "GitHub",
+    def: "A website that hosts Git timelines. git push sends snapshots there. Pages reads GitHub, not Cursor.",
+  },
+  clone: {
+    term: "clone",
+    def: "git clone: copy a repo (files + history) to a new folder once. After that, pull to update.",
+  },
+  branch: {
+    term: "branch",
+    def: "A named line of commits. main is the default. Other names let you commit without moving main yet.",
+  },
+  "pull-request": {
+    term: "Pull request",
+    def: "A GitHub request to merge a branch into another (usually main) after a human looks. Not the same as git pull.",
+  },
+  url: {
+    term: "URL",
+    def: "The full address: scheme, host, path, optional query. The HTTP method is not inside the URL.",
+  },
+  query: {
+    term: "Query string",
+    def: "The ?a=1&b=2 tail on a URL. Extra filters. GET with a query is still GET.",
   },
   database: {
     term: "Database",

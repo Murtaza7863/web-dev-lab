@@ -1,12 +1,12 @@
 window.LEARN_TRACKS = window.LEARN_TRACKS || [];
 window.LEARN_TRACKS.push({
   id: "http",
-  title: "Two programs talking",
-  quest: "Two programs",
+  title: "HTTP and APIs",
+  quest: "HTTP and APIs",
   blurb:
-    "You already have a page and a click. Sometimes the list lives in another program. A message replaces a method call.",
+    "A message replaces a method call. This part is the important one: request, reply, JSON, fetch, then the four verbs.",
   youKnow:
-    "HTML, CSS, and JS already happened. Your click can change an array in this tab. Sharing needs a second program.",
+    "You have a page, Git snapshots, and names for the jobs. Sharing a list needs a second program and a contract of URLs.",
   lessons: [
     {
       id: "http-1",
@@ -149,6 +149,8 @@ window.LEARN_TRACKS.push({
         prompt:
           "Write async function listNotes() that GET /api/notes and returns the parsed JSON array.",
         starter: "async function listNotes() {\n  \n}",
+        expected:
+          'async function listNotes() {\n  const res = await fetch("/api/notes");\n  return await res.json();\n}',
         tests: [
           {
             expr: "(await listNotes()).length >= 2",
@@ -189,6 +191,8 @@ window.LEARN_TRACKS.push({
         prompt:
           "Write async function createNote(title, text) that POSTs JSON to /api/notes and returns the created object (with id).",
         starter: "async function createNote(title, text) {\n  \n}",
+        expected:
+          'async function createNote(title, text) {\n  const res = await fetch("/api/notes", {\n    method: "POST",\n    headers: { "Content-Type": "application/json" },\n    body: JSON.stringify({ title, text })\n  });\n  return await res.json();\n}',
         tests: [
           {
             expr: "(await createNote('SkillCheckSnack', 'x')).title",
@@ -239,6 +243,150 @@ window.LEARN_TRACKS.push({
           { id: "c", text: "CSS", ok: false },
         ],
         why: "400 = validation. You already wrote that as if.",
+      },
+    },
+    {
+      id: "http-7",
+      title: "A URL is an address with pieces",
+      words: ["url", "query"],
+      body: `
+        <p>You have been writing paths like <code>/api/notes/3</code>. A full address has more pieces. You should be able to point at each one:</p>
+<pre>https://notes.example.com/api/notes/3?limit=10</pre>
+        <table class="plain">
+          <tr><td><code>https</code></td><td><strong>Scheme.</strong> How to talk. <code>https</code> is HTTP inside encryption. Browsers warn on plain <code>http</code> except localhost.</td></tr>
+          <tr><td><code>notes.example.com</code></td><td><strong>Host.</strong> Which computer. Together with the scheme (and port if any) this is the origin you met in CORS later.</td></tr>
+          <tr><td><code>/api/notes/3</code></td><td><strong>Path.</strong> Which thing on that computer. The <code>3</code> is still the id.</td></tr>
+          <tr><td><code>?limit=10</code></td><td><strong>Query string.</strong> Extra filters after <code>?</code>. <code>name=value</code>, more pairs joined with <code>&amp;</code>. Not a new verb. GET with a query is still GET.</td></tr>
+        </table>
+        <div class="callout word"><strong>New word — URL.</strong> Uniform Resource Locator: the full address. Path is one piece. The verb (GET/POST) is <em>not</em> in the URL. It travels beside it.</div>
+        <div class="callout word"><strong>New word — query.</strong> The <code>?a=1&amp;b=2</code> tail. Optional. Use it for “list, but only 10” or “search,” not for “please delete” (that is DELETE + path).</div>
+        <p><code>fetch("/api/notes")</code> is a <em>relative</em> URL: same host as this page. <code>fetch("https://other.com/api/notes")</code> is another origin. That is when CORS appears (Spring chapter).</p>
+      `,
+      exercise: {
+        type: "choice",
+        prompt: "In GET /api/notes?limit=10 the ?limit=10 is…",
+        options: [
+          { id: "a", text: "A different HTTP method named QUERY", ok: false },
+          {
+            id: "b",
+            text: "A query string: extra filters. The method is still GET",
+            ok: true,
+          },
+          { id: "c", text: "CSS", ok: false },
+        ],
+        why: "Verb stays GET. Query is optional data on the URL.",
+      },
+    },
+    {
+      id: "http-8",
+      title: "An API is a promised menu",
+      words: ["api"],
+      body: `
+        <p>You already met <strong>API</strong> as “the URLs + methods the server promises.” Treat it like a menu taped to the kitchen: the page does not invent paths. It orders what the menu lists.</p>
+        <div class="demo">
+          <div class="demo-label">A tiny notes API (this Lab)</div>
+          <table class="plain">
+            <tr><td><code>GET /api/notes</code></td><td>list → JSON array</td></tr>
+            <tr><td><code>POST /api/notes</code></td><td>JSON <code>{ title, text }</code> → 201 + note with <code>id</code>, or 400 if title empty</td></tr>
+            <tr><td><code>GET /api/notes/:id</code></td><td>one note, or 404</td></tr>
+            <tr><td><code>PUT /api/notes/:id</code></td><td>replace fields</td></tr>
+            <tr><td><code>DELETE /api/notes/:id</code></td><td>204 or 404</td></tr>
+          </table>
+        </div>
+        <p>That table <em>is</em> the API. JSON shapes are part of the promise: the page sends <code>title</code>, not <code>heading</code>, because the server’s <code>Note</code> uses <code>title</code>.</p>
+        <p>Real products publish this as docs (or OpenAPI). You still read it as: verb, path, body in, status + body out. You already debug with those five parts.</p>
+        <p>This site’s Lab is a fake kitchen that honors the same menu, in the browser, so you can practice without Spring running.</p>
+      `,
+      exercise: {
+        type: "choice",
+        prompt:
+          "You want to create a note. The menu says POST /api/notes. You should…",
+        options: [
+          {
+            id: "a",
+            text: "GET /api/notes and hope it creates one",
+            ok: false,
+          },
+          {
+            id: "b",
+            text: "POST /api/notes with JSON { title, text } as the menu states",
+            ok: true,
+          },
+          { id: "c", text: "Invent POST /api/makeNoteBecauseJava", ok: false },
+        ],
+        why: "The API is the contract. Guessing paths is how 404s happen.",
+      },
+    },
+    {
+      id: "http-9",
+      title: "401 and 403: the server refused you",
+      words: ["status-code", "headers"],
+      body: `
+        <p>You know 400 (junk body), 404 (no such id), 500 (their crash). Two more numbers show up the moment a list is not public:</p>
+        <table class="plain">
+          <tr><td><code>401</code></td><td>Who are you? The server expected a login (or a token) and you sent none, or a bad one.</td></tr>
+          <tr><td><code>403</code></td><td>The server knows who you are, and you are not allowed to do this verb on this note.</td></tr>
+        </table>
+        <p>Often the page sends a <strong>header</strong> such as <code>Authorization: Bearer …</code> — a string the server checks, the same idea as a password, but for programs. You put it in a header, not in the query string, so it is less likely to land in logs and screenshots.</p>
+        <p>This Lab does not require login. A real notes app would. You do not need to build auth in this course. You need to <em>read</em> 401 vs 403 instead of rewriting fetch at random.</p>
+        <div class="callout warn">If a lesson or a person asks you to steal someone else’s token, stop. That is not this course. Your own token is a secret, like a password.</div>
+      `,
+      exercise: {
+        type: "choice",
+        prompt: "GET /api/notes returns 401. That means…",
+        options: [
+          {
+            id: "a",
+            text: "The JSON body was invalid (that is 400)",
+            ok: false,
+          },
+          {
+            id: "b",
+            text: "The server wants you identified (login/token) and you weren’t",
+            ok: true,
+          },
+          {
+            id: "c",
+            text: "The note id does not exist (that is 404)",
+            ok: false,
+          },
+        ],
+        why: "401 = who are you. 403 = we know you, no. 400 = junk body. 404 = missing row.",
+      },
+    },
+    {
+      id: "http-10",
+      title: "Repeating GET is safe. Repeating POST may not be.",
+      words: ["get", "post"],
+      body: `
+        <p>Refresh this lesson: the browser GETs the HTML again. That should not create a second copy of the lesson. GET is supposed to <strong>only read</strong>.</p>
+        <p>POST create is different. Two POSTs with the same body can mean two notes. A double-click on Add, or a retry when the network hiccups, is a real bug: duplicate rows.</p>
+        <p>Practical habits:</p>
+        <ul>
+          <li>Disable the button until the response arrives.</li>
+          <li>Read the status before you <code>json()</code> and redraw.</li>
+          <li>If you meant “change this id,” use PUT on that path, not another POST.</li>
+        </ul>
+        <p>You now have the whole HTTP spine: two programs, verb + path, JSON, fetch, five parts when it fails, URL pieces, the menu, 401/403, and why GET vs POST matter when you retry. Next chapter is those four verbs as URLs you type in JavaScript.</p>
+        <p>Open the Lab after this part. Watch the log. Name the five parts out loud once. That is the skill.</p>
+      `,
+      exercise: {
+        type: "choice",
+        prompt: "The user double-clicks Add. Two identical notes appear. Why?",
+        options: [
+          {
+            id: "a",
+            text: "GET ran twice and GET always creates rows",
+            ok: false,
+          },
+          {
+            id: "b",
+            text: "POST ran twice. Create is not safe to repeat like GET",
+            ok: true,
+          },
+          { id: "c", text: "CSS flexbox duplicated the card", ok: false },
+        ],
+        why: "GET read. POST create. Retries of POST can duplicate. Disable the button.",
       },
     },
   ],

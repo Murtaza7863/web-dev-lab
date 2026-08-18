@@ -48,6 +48,7 @@ window.LEARN_TRACKS.push({
         type: "js",
         prompt: 'Write isEmpty(s) that returns true only for "".',
         starter: "function isEmpty(s) {\n  \n}",
+        expected: 'function isEmpty(s) {\n  return s === "";\n}',
         tests: [
           {
             expr: 'isEmpty("") === true',
@@ -94,6 +95,8 @@ people.push(person);   <span class="c">// add at the end, like list.add</span></
         prompt:
           'Write ada() returning {name:"Ada", age:20}. Write isValidAge(n) true only when n >= 0.',
         starter: "function ada() {\n  \n}\n\nfunction isValidAge(n) {\n  \n}",
+        expected:
+          'function ada() {\n  return { name: "Ada", age: 20 };\n}\n\nfunction isValidAge(n) {\n  return n >= 0;\n}',
         tests: [
           {
             expr: "ada().name",
@@ -143,6 +146,8 @@ document.getElementById(<span class="x">"list"</span>).appendChild(li);</pre>
           "Set #hello's text to Hi Ada. Add an li that says Ada inside #list.",
         fixture: '<p id="hello">…</p><ul id="list"></ul>',
         starter: "// document.getElementById(...)\n",
+        expected:
+          'document.getElementById("hello").textContent = "Hi Ada";\nconst li = document.createElement("li");\nli.textContent = "Ada";\ndocument.getElementById("list").appendChild(li);',
         checks: [
           { sel: "#hello", text: "Hi Ada", msg: "#hello should say Hi Ada" },
           {
@@ -185,6 +190,8 @@ document.getElementById(<span class="x">"out"</span>).textContent = typed;</pre>
         fixture:
           '<input id="src" value="Ada"><button id="go" type="button">Go</button><p id="out"></p>',
         starter: 'const go = document.getElementById("go");\n',
+        expected:
+          'const go = document.getElementById("go");\ngo.addEventListener("click", () => {\n  document.getElementById("out").textContent =\n    document.getElementById("src").value;\n});',
         checks: [
           {
             after: (doc) => doc.getElementById("go").click(),
@@ -223,6 +230,8 @@ add.addEventListener(<span class="x">"click"</span>, () => {
           '<input id="name" value="Ada"><button id="add" type="button">Add</button><ul id="list"></ul>',
         starter:
           'const add = document.getElementById("add");\nadd.addEventListener("click", () => {\n  \n});\n',
+        expected:
+          'const add = document.getElementById("add");\nadd.addEventListener("click", () => {\n  const name = document.getElementById("name").value;\n  if (name === "") return;\n  const li = document.createElement("li");\n  li.textContent = name;\n  document.getElementById("list").appendChild(li);\n});',
         after: (doc) => {
           doc.getElementById("add").click();
           doc.getElementById("name").value = "";
@@ -266,6 +275,8 @@ add.addEventListener(<span class="x">"click"</span>, () => {
           "Write save(key, data) that JSON-stringifies into localStorage. Write load(key) that parses or returns [].",
         starter:
           "function save(key, data) {\n  \n}\n\nfunction load(key) {\n  \n}",
+        expected:
+          'function save(key, data) {\n  localStorage.setItem(key, JSON.stringify(data));\n}\n\nfunction load(key) {\n  return JSON.parse(localStorage.getItem(key) || "[]");\n}',
         tests: [
           {
             setup: "save('__webdev_lab_save_t', [{a:1}]);",
@@ -337,7 +348,7 @@ add.addEventListener(<span class="x">"click"</span>, () => {
         </ol>
         <p>That is a complete program on <em>this</em> browser profile. Refresh on the same laptop: localStorage can restore the list. Open the same site on a different laptop or a different Chrome profile: empty. That is not a bug. There is no shared disk.</p>
         <div class="callout word"><strong>New word — frontend.</strong> HTML + CSS + JS: what the browser runs. You just did this.</div>
-        <p>To share one list among many people you need a <strong>second program</strong> that owns the data (a backend). The page will send it a message. That is later. First we will name the jobs you already built (input, rules, remember, show). We will not restart HTML.</p>
+        <p>To share one list among many people you need a <strong>second program</strong> that owns the data (a backend). The page will send it a message. That is soon. Next chapter is Git: snapshot these files so you can see what an agent changed. Then we name the jobs (input, rules, remember, show). We will not restart HTML.</p>
       `,
       exercise: {
         type: "choice",

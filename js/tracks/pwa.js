@@ -109,21 +109,15 @@ window.LEARN_TRACKS.push({
     },
     {
       id: "pwa-4",
-      title: "Git is how files get to Pages",
+      title: "Push is how Pages updates",
       words: ["git", "github-pages"],
       body: `
-        <p>Pages does not watch your laptop. It serves what is in the GitHub repository after a publish step. The usual path:</p>
+        <p>You already learned Git: add, commit, push. GitHub Pages does not watch Cursor. It serves what is on GitHub after a publish step.</p>
 <pre>git add .
 git commit -m "lessons"
 git push</pre>
-        <ul>
-          <li><code>git add</code> — stage files (mark them for the next snapshot)</li>
-          <li><code>git commit</code> — take a snapshot with a message. Local only until you push.</li>
-          <li><code>git push</code> — send commits to GitHub</li>
-        </ul>
-        <div class="callout java">Git is a timeline of source files. commit = snapshot. push = send to GitHub. It is not a compiler. It is not HTTP for your notes API.</div>
-        <p>This repo uses GitHub Actions: after push, a workflow copies the repo (or a folder) to the Pages site. Until that job finishes, the public URL can still show the old files. Until you push, Pages cannot know you edited a lesson in Cursor.</p>
-        <p>If you edited locally and the live site is old: commit, push, wait for the workflow, then hard-refresh because of the service worker cache.</p>
+        <p>This repo uses GitHub Actions: after push, a workflow copies files to the Pages URL. Until that job finishes, the public site can still be old. Until you push, Pages cannot know you edited a lesson on your laptop.</p>
+        <p>If you edited locally and the live site is old: commit, push, wait for the workflow, then hard-refresh because of the service worker cache. Lesson checkmarks live in <code>localStorage</code> — they are not a Git commit.</p>
       `,
       exercise: {
         type: "choice",

@@ -91,6 +91,8 @@ window.LEARN_TRACKS.push({
         prompt:
           "Write async function removeNote(id) that DELETE /api/notes/{id} and returns true if status is 204 or 200.",
         starter: "async function removeNote(id) {\n  \n}",
+        expected:
+          'async function removeNote(id) {\n  const res = await fetch("/api/notes/" + id, { method: "DELETE" });\n  return res.status === 204 || res.status === 200;\n}',
         tests: [
           {
             setup:
@@ -123,6 +125,8 @@ window.LEARN_TRACKS.push({
           "Write async function crudRoundtrip() that: POSTs {title:'LabProbe', text:'a'}, PUTs that id with text 'b' (keep title), GETs it and returns the text (should be b), then DELETEs it.",
         starter:
           "async function crudRoundtrip() {\n  const headers = { 'Content-Type': 'application/json' };\n  \n}",
+        expected:
+          "async function crudRoundtrip() {\n  const headers = { 'Content-Type': 'application/json' };\n  const created = await (await fetch('/api/notes', { method: 'POST', headers, body: JSON.stringify({ title: 'LabProbe', text: 'a' }) })).json();\n  await fetch('/api/notes/' + created.id, { method: 'PUT', headers, body: JSON.stringify({ title: 'LabProbe', text: 'b' }) });\n  const got = await (await fetch('/api/notes/' + created.id)).json();\n  await fetch('/api/notes/' + created.id, { method: 'DELETE' });\n  return got.text;\n}",
         tests: [
           {
             expr: "await crudRoundtrip()",

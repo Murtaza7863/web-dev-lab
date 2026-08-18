@@ -287,8 +287,8 @@ window.LEARN_TRACKS.push({
           <tr><td><strong>Backend</strong></td><td>Another program that owns a shared list. Often Java. Not in the tab. Not yet in this course’s running site.</td></tr>
         </table>
         <p>localStorage is enough for one person on one browser. It is not enough when two phones should see the same notes. That is the only reason a backend exists: a second program with one copy of the list that many clients can call.</p>
-        <p>Next chapters: how a message replaces a method call (HTTP), then the four verbs as URLs, then optional Java that waits (Spring), then how these files get hosted.</p>
-        <p>We will not restart HTML.</p>
+        <p>Git already happened: snapshots and push. Next is HTTP — how a message replaces a method call — then the four verbs as URLs, then optional Java that waits (Spring), then how these files get hosted.</p>
+        <p>We will not restart HTML or Git.</p>
       `,
       exercise: {
         type: "choice",

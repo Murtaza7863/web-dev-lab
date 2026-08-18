@@ -4,11 +4,21 @@
     "html",
     "css",
     "js",
+    "git",
     "swe",
     "http",
     "crud",
     "spring",
     "pwa",
+  ];
+  const PARTS = [
+    { title: "Part 1 — A page", ids: ["start", "html", "css", "js"] },
+    { title: "Part 2 — Git and GitHub", ids: ["git"] },
+    { title: "Part 3 — HTTP and APIs", ids: ["swe", "http", "crud"] },
+    {
+      title: "Part 4 — Optional Java server, then ship",
+      ids: ["spring", "pwa"],
+    },
   ];
   const ICONS = {
     home: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 10.5 12 4l8 6.5V20H4z"/><path d="M9 20v-6h6v6"/></svg>',
@@ -202,7 +212,7 @@
       <section class="hero">
         <span class="badge">HTML has not happened yet</span>
         <h1>You can write Java. You have not written a webpage.</h1>
-        <p>You know objects, forcing input, and <code>if</code>. None of that is HTML. This course starts from one tag, then paint, then a click. No app you already built is required.</p>
+        <p>You know objects, forcing input, and <code>if</code>. None of that is HTML. This course starts from one tag, then paint, then a click. Then Git (what an agent just committed). Then HTTP — two programs talking. No app you already built is required.</p>
         <div class="row">
           ${
             nq
@@ -226,7 +236,7 @@
       ${check ? renderCheckSummary(check) : `<div class="callout tip"><strong>Skip the quiz if you want.</strong> Start the first lesson. New words get an orange box. Skip exists if a checker is picky.</div>`}
       <h2>Chapters</h2>
       ${questPathHtml()}
-      <div class="callout java">Java stays in your pocket. HTML is new. CSS is paint. JavaScript is a second language with objects and if. Spring is optional and last.</div>
+      <div class="callout java">Java stays in your pocket. HTML is new. CSS is paint. JavaScript is a second language with objects and if. Git snapshots files. HTTP is how two programs talk. Spring is optional and last.</div>
       <p class="sub" style="color:var(--muted);font-family:system-ui;font-size:0.85rem"><button class="btn ghost" id="reset-progress" type="button">Reset save</button></p>
     `,
     );
@@ -263,22 +273,29 @@
 
   function questPathHtml() {
     const nq = nextQuest();
-    return `<div class="quest-path">${tracks()
-      .map((t, i) => {
-        const done = t.lessons.every((l) => Store.isDone(l.id));
-        const started = t.lessons.some((l) => Store.isDone(l.id));
-        const isNext = nq && nq.track.id === t.id;
-        const cls = done ? "done" : isNext ? "next" : started ? "mid" : "";
-        const n = t.lessons.filter((l) => Store.isDone(l.id)).length;
-        return `<a class="path-node ${cls}" href="#/learn/${t.id}">
+    const list = tracks();
+    function node(t) {
+      const i = list.indexOf(t);
+      const done = t.lessons.every((l) => Store.isDone(l.id));
+      const started = t.lessons.some((l) => Store.isDone(l.id));
+      const isNext = nq && nq.track.id === t.id;
+      const cls = done ? "done" : isNext ? "next" : started ? "mid" : "";
+      const n = t.lessons.filter((l) => Store.isDone(l.id)).length;
+      return `<a class="path-node ${cls}" href="#/learn/${t.id}">
           <span class="path-num">${i + 1}</span>
           <span>
             <strong>${esc(questName(t))}</strong>
             <em>${esc(t.title)} · ${n}/${t.lessons.length}</em>
           </span>
         </a>`;
-      })
-      .join("")}</div>`;
+    }
+    return PARTS.map((part) => {
+      const chunk = part.ids
+        .map((id) => list.find((t) => t.id === id))
+        .filter(Boolean);
+      if (!chunk.length) return "";
+      return `<div class="part-block"><p class="part-label">${esc(part.title)}</p><div class="quest-path">${chunk.map(node).join("")}</div></div>`;
+    }).join("");
   }
 
   function renderLearn() {
@@ -286,8 +303,8 @@
       "learn",
       `
       <span class="badge">From zero HTML</span>
-      <h1>A page, then paint, then a click.</h1>
-      <p>Do these in order. You have not written HTML yet until that chapter. CSS cannot run <code>if</code>. JavaScript is not Java. Skip exists if a checker nags.</p>
+      <h1>A page, then Git, then HTTP.</h1>
+      <p>Part 1 is a page (tags, paint, click). Part 2 is Git — enough to understand a commit and a push. Part 3 is HTTP and APIs. Skip exists if a checker nags.</p>
       ${pipelineStrip(nextQuest() ? nextQuest().track.id : "pwa")}
       ${questPathHtml()}
     `,
@@ -431,32 +448,41 @@
     return cs.getPropertyValue(prop) || cs[prop] || "";
   }
 
-  function iframeDoc(srcdoc, host) {
+  function iframeDoc(srcdoc, host, opts) {
     return new Promise((resolve, reject) => {
       const iframe = document.createElement("iframe");
       iframe.className = "preview-frame";
-      iframe.setAttribute("sandbox", "allow-scripts allow-same-origin");
+      const allowScripts = opts && opts.scripts;
+      iframe.setAttribute(
+        "sandbox",
+        allowScripts ? "allow-scripts allow-same-origin" : "allow-same-origin",
+      );
       let settled = false;
-      const t = setTimeout(() => {
-        if (!settled) reject(new Error("preview timeout"));
-      }, 2500);
-      const finish = () => {
+      const finish = (err) => {
         if (settled) return;
+        settled = true;
+        clearTimeout(t);
+        clearInterval(poll);
+        if (err) reject(err);
+        else resolve(iframe);
+      };
+      const t = setTimeout(() => finish(new Error("preview timeout")), 2500);
+      const isReady = () => {
         const doc = iframe.contentDocument;
-        if (!doc || !doc.body) return;
+        if (!doc || !doc.documentElement || !doc.body) return false;
         const url = String(doc.URL || "");
-        if (url === "about:blank") return;
-        settled = true;
-        clearTimeout(t);
-        resolve(iframe);
+        if (url.includes("srcdoc")) return true;
+        if (doc.head.querySelector("style, title, link, script")) return true;
+        if (doc.body.children.length > 0) return true;
+        return (doc.body.textContent || "").trim().length > 0;
       };
-      iframe.onload = finish;
-      iframe.onerror = () => {
-        if (settled) return;
-        settled = true;
-        clearTimeout(t);
-        reject(new Error("preview failed"));
+      const poll = setInterval(() => {
+        if (isReady()) finish();
+      }, 25);
+      iframe.onload = () => {
+        if (isReady()) finish();
       };
+      iframe.onerror = () => finish(new Error("preview failed"));
       iframe.srcdoc = srcdoc;
       if (host) {
         host.innerHTML = "";
@@ -548,7 +574,8 @@
       "text",
     ].includes(ex.type);
     const previewId = "ex-preview";
-    const alwaysSkip = ex.type === "text" || ex.type === "java";
+    const alwaysSkip =
+      ex.type === "text" || ex.type === "java" || Boolean(ex.expected);
     root.innerHTML = `
       <h2>Challenge</h2>
       <p>${esc(ex.prompt)}</p>
@@ -611,6 +638,7 @@
     }
 
     async function run() {
+      if (settled) return;
       msg.innerHTML = "";
       try {
         const result = await evaluate(
@@ -699,19 +727,19 @@
         return { ok: false, msg: "Need a <title> in <head>" };
       }
       const src = htmlSrcdoc(code, ex.requireDoctype);
-      const iframe = await iframeDoc(src, preview);
+      const iframe = await iframeDoc(src, preview, { scripts: false });
       return checkDom(iframe.contentDocument, ex.checks);
     }
 
     if (ex.type === "css") {
       const src = `<!DOCTYPE html><html><head><style>${code}</style></head><body>${ex.fixture}</body></html>`;
-      const iframe = await iframeDoc(src, preview);
+      const iframe = await iframeDoc(src, preview, { scripts: false });
       return checkDom(iframe.contentDocument, ex.checks);
     }
 
     if (ex.type === "js-dom") {
       const src = `<!DOCTYPE html><html><body>${ex.fixture}</body></html>`;
-      const iframe = await iframeDoc(src, preview);
+      const iframe = await iframeDoc(src, preview, { scripts: true });
       const win = iframe.contentWindow;
       try {
         new win.Function(code)();

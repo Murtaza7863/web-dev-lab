@@ -1,4 +1,4 @@
-const VERSION = "webdev-lab-v12";
+const VERSION = "webdev-lab-v15";
 const ASSETS = [
   "./",
   "./index.html",
@@ -18,6 +18,7 @@ const ASSETS = [
   "./js/tracks/swe.js",
   "./js/tracks/css.js",
   "./js/tracks/js.js",
+  "./js/tracks/git.js",
   "./js/tracks/http.js",
   "./js/tracks/crud.js",
   "./js/tracks/spring.js",
