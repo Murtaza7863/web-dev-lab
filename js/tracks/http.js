@@ -2,25 +2,28 @@ window.LEARN_TRACKS = window.LEARN_TRACKS || [];
 window.LEARN_TRACKS.push({
   id: "http",
   title: "Two programs talking",
-  quest: "The Call",
+  quest: "Two programs",
   blurb:
-    "Sometimes the page asks another program for data. We'll name the message format when you send one.",
+    "You already have a page and a click. Sometimes the list lives in another program. A message replaces a method call.",
   youKnow:
-    "Your CLI calls methods on ExpenseTracker in the same program. A website often asks a second program instead.",
+    "HTML, CSS, and JS already happened. Your click can change an array in this tab. Sharing needs a second program.",
   lessons: [
     {
       id: "http-1",
-      title: "Client and server",
+      title: "This page, and another program",
       words: ["http", "request", "response"],
       body: `
-        <p>Two programs:</p>
+        <p>Until now, add() lived in one place: this tab. The array was in JavaScript memory. A second laptop could not see it.</p>
+        <p>To share a list, you run <strong>two programs</strong>:</p>
         <ul>
-          <li><strong>This page</strong> (also called the client) — running in your browser</li>
-          <li><strong>Another program</strong> (also called the server) — often Java, waiting for questions</li>
+          <li><strong>This page</strong> (the <strong>client</strong>) — HTML/CSS/JS in your browser. It draws boxes and sends messages.</li>
+          <li><strong>Another program</strong> (the <strong>server</strong>) — often Java, sitting somewhere, waiting. It owns the real list.</li>
         </ul>
-        <div class="callout word"><strong>New word — HTTP.</strong> The envelope those two programs use to send a question and get an answer. You don't need the letters memorized. “A request and a reply” is enough.</div>
-        <p>Your CLI never needed this: <code>tracker.addExpense(e)</code> is a method in the <em>same</em> program. A website often cannot do that — the list lives somewhere else.</p>
-        <p>We will not say API yet. That's just “the list of questions the other program answers.” Later.</p>
+        <p>In one Java file you would call a method on an object in the same memory: <code>list.add(note)</code>. A website often cannot do that. The list is not in this tab. You send a <strong>message</strong> instead of calling a method.</p>
+        <div class="callout word"><strong>New word — HTTP.</strong> The envelope those messages use: a question (request) and an answer (response). You do not need the full spec. “A request and a reply” is enough.</div>
+        <div class="callout word"><strong>New word — request.</strong> What the client sends: “please list the notes” or “please save this note.”</div>
+        <div class="callout word"><strong>New word — response.</strong> What the server sends back: a yes/no number plus optional data (the list, the saved note, an error).</div>
+        <p>Your browser loading this lesson is already a client. The files came from a server (GitHub Pages). Next we will send our own requests for notes, not just for HTML files.</p>
       `,
       exercise: {
         type: "choice",
@@ -30,73 +33,80 @@ window.LEARN_TRACKS.push({
           { id: "b", text: "Client", ok: true },
           { id: "c", text: "Database", ok: false },
         ],
-        why: "The browser is always the client. Spring Boot would be the server. GitHub Pages is just a file host for the client.",
+        why: "The browser is always the client.",
       },
     },
     {
       id: "http-2",
-      title: "Methods and status codes",
+      title: "Verbs and a yes/no number",
       words: ["get", "post", "status-code"],
       body: `
-        <p>The <strong>method</strong> is the verb. The <strong>path</strong> is which thing. Together they mean "do this to that."</p>
+        <p>An HTTP request has at least two important pieces besides the data:</p>
+        <ul>
+          <li>The <strong>method</strong> (verb) — what you want done</li>
+          <li>The <strong>path</strong> (URL after the site) — which thing</li>
+        </ul>
+        <p>The four verbs you already named in English map to HTTP methods:</p>
         <table class="plain">
-          <tr><td><code>GET</code></td><td>Read. No body. Repeatable.</td></tr>
-          <tr><td><code>POST</code></td><td>Create. Body is the new thing.</td></tr>
-          <tr><td><code>PUT</code> / <code>PATCH</code></td><td>Update.</td></tr>
-          <tr><td><code>DELETE</code></td><td>Remove.</td></tr>
+          <tr><td><code>GET</code></td><td>Read. List notes, or show one. Do not change the list. Safe to repeat.</td></tr>
+          <tr><td><code>POST</code></td><td>Create. The body of the request is the new note. Repeating it may create two notes.</td></tr>
+          <tr><td><code>PUT</code></td><td>Change an existing note. You say which id in the path.</td></tr>
+          <tr><td><code>DELETE</code></td><td>Remove that id.</td></tr>
         </table>
-        <p>The response starts with a <strong>status code</strong>:</p>
+        <p>The reply starts with a <strong>status code</strong> — a number meaning yes, no, or crash. You already knew the English (reject vs missing vs threw). These are the usual numbers:</p>
         <table class="plain">
-          <tr><td><code>200</code></td><td>OK (GET usually)</td></tr>
-          <tr><td><code>201</code></td><td>Created (POST succeeded)</td></tr>
-          <tr><td><code>204</code></td><td>OK, no body (DELETE often)</td></tr>
-          <tr><td><code>400</code></td><td>You sent junk</td></tr>
-          <tr><td><code>404</code></td><td>That id/url doesn't exist</td></tr>
-          <tr><td><code>500</code></td><td>Server crashed</td></tr>
+          <tr><td><code>200</code></td><td>OK. Here is the data (a list, or one note).</td></tr>
+          <tr><td><code>201</code></td><td>Created. POST worked. The body is often the saved note with an <code>id</code>.</td></tr>
+          <tr><td><code>204</code></td><td>OK, empty body. Common after DELETE.</td></tr>
+          <tr><td><code>400</code></td><td>You sent junk. Empty title — the server’s <code>if</code>, same as yours.</td></tr>
+          <tr><td><code>404</code></td><td>That id is not there.</td></tr>
+          <tr><td><code>500</code></td><td>The other program crashed. Not your validation. Their bug.</td></tr>
         </table>
-        <div class="callout java">Status codes are the web's return values. <code>void</code> + exception vs <code>204</code> + <code>404</code>.</div>
+        <div class="callout word"><strong>New word — status code.</strong> The number at the start of the response. Read it before you read the JSON. 400 means look at what you sent. 500 means look at the server log.</div>
       `,
       exercise: {
         type: "choice",
-        prompt:
-          "You request GET /api/expenses/99 and nothing has id 99. Typical status?",
+        prompt: "GET /api/notes/99 and nothing has id 99. Typical status?",
         options: [
           { id: "a", text: "200", ok: false },
           { id: "b", text: "201", ok: false },
           { id: "c", text: "404", ok: true },
           { id: "d", text: "500", ok: false },
         ],
-        why: "404 = the resource isn't there. 500 would mean the server threw. 200 would mean you found it.",
+        why: "404 = not there. 500 = threw. 200 = you found it.",
       },
     },
     {
       id: "http-3",
-      title: "JSON",
+      title: "JSON is the object as text",
       words: ["json"],
       body: `
-        <p>JSON is a text format for objects and arrays. Language-neutral. Java and JS both speak it.</p>
+        <p>HTTP bodies are bytes. Programs agree on a text format so Java and JavaScript can share an object. That format is <strong>JSON</strong>.</p>
+        <div class="callout word"><strong>New word — JSON.</strong> JavaScript Object Notation: a text format for objects and arrays. Despite the name, Java speaks it too. It is not JavaScript code. It is data.</div>
 <pre>{
-  <span class="a">"description"</span>: <span class="x">"Coffee"</span>,
-  <span class="a">"amount"</span>: 4.5,
-  <span class="a">"category"</span>: <span class="x">"Food"</span>
+  <span class="a">"title"</span>: <span class="x">"Hello"</span>,
+  <span class="a">"text"</span>: <span class="x">"First note"</span>
 }</pre>
+        <p>Rules that bite beginners:</p>
         <ul>
-          <li>Keys in double quotes</li>
-          <li>Strings in double quotes (not single)</li>
-          <li>No trailing comma</li>
-          <li>No comments</li>
+          <li>Keys in <strong>double quotes</strong>. <code>title:</code> without quotes is not JSON (that was a JS object literal).</li>
+          <li>Strings in double quotes. No single quotes.</li>
+          <li><strong>No trailing comma</strong> after the last field. JS often allows it. JSON does not.</li>
+          <li>No comments.</li>
         </ul>
-        <p>JS: <code>JSON.stringify(obj)</code> / <code>JSON.parse(text)</code></p>
-        <p>Java: libraries (Jackson, used by Spring) turn JSON into your <code>Expense</code> class.</p>
-        <div class="callout java">Your <code>toString()</code> CSV (<code>Coffee,4.5,Food</code>) is a homemade format. JSON is the one APIs standardized on.</div>
+        <p>You already converted objects ↔ text for localStorage:</p>
+        <ul>
+          <li><code>JSON.stringify(obj)</code> — object → text, to send or save</li>
+          <li><code>JSON.parse(text)</code> — text → object, after you receive or load</li>
+        </ul>
+        <p>A POST body is the stringify step, sent over HTTP instead of into localStorage.</p>
       `,
       exercise: {
         type: "text",
         prompt:
-          "Type a JSON object with description Coffee (string), amount 4.5 (number), category Food (string). No trailing comma.",
-        placeholder: '{ "description": ... }',
-        expected:
-          '{ "description": "Coffee", "amount": 4.5, "category": "Food" }',
+          "JSON object with title Hello (string) and text Hi (string). No trailing comma.",
+        placeholder: '{ "title": ... }',
+        expected: '{ "title": "Hello", "text": "Hi" }',
         check: (raw) => {
           let v;
           try {
@@ -107,22 +117,11 @@ window.LEARN_TRACKS.push({
               msg: "Not valid JSON. Double quotes, no trailing comma. Or Skip.",
             };
           }
-          const desc = String(v.description || "").toLowerCase();
-          const cat = String(v.category || "").toLowerCase();
-          const amt = Number(v.amount);
-          if (desc !== "coffee")
-            return { ok: false, msg: "description should be Coffee" };
-          if (!(Math.abs(amt - 4.5) < 0.001))
-            return {
-              ok: false,
-              msg: "amount should be the number 4.5, not a string",
-            };
-          if (cat !== "food")
-            return { ok: false, msg: "category should be Food" };
-          return {
-            ok: true,
-            msg: "That's a request body Spring can turn into Expense.",
-          };
+          if (String(v.title || "").toLowerCase() !== "hello")
+            return { ok: false, msg: "title should be Hello" };
+          if (String(v.text || "").toLowerCase() !== "hi")
+            return { ok: false, msg: "text should be Hi" };
+          return { ok: true, msg: "That’s a request body." };
         },
       },
     },
@@ -131,33 +130,35 @@ window.LEARN_TRACKS.push({
       title: "fetch GET",
       words: ["fetch", "api"],
       body: `
-        <p><code>fetch</code> is how JS sends HTTP.</p>
-<pre><span class="t">const</span> res = <span class="t">await</span> fetch(<span class="x">"/api/expenses"</span>);
-<span class="t">const</span> data = <span class="t">await</span> res.json();  <span class="c">// parse JSON body</span>
-<span class="c">// data is an array of expenses</span></pre>
-        <p><code>await</code> because the network is slow — you practiced that in The Hands. The function must be <code>async</code>.</p>
-        <p>This PWA intercepts <code>/api/...</code> and answers like Spring would. Open the Lab tab after this — the list is a GET.</p>
-<pre><span class="t">async function</span> load() {
-  <span class="t">const</span> res = <span class="t">await</span> fetch(<span class="x">"/api/expenses"</span>);
-  <span class="t">if</span> (!res.ok) <span class="t">throw new</span> Error(res.status);
-  <span class="t">return</span> res.json();
-}</pre>
+        <p><code>fetch</code> is the JavaScript function that sends HTTP. You already met <code>async</code> / <code>await</code> so this function can wait without freezing the page.</p>
+        <div class="callout word"><strong>New word — fetch.</strong> Built into the browser. You pass a URL. It returns a response. Default method is GET (read).</div>
+        <div class="callout word"><strong>New word — API.</strong> Application Programming Interface: the set of URLs + methods the server promises. “The notes API” means paths like <code>/api/notes</code>, not a special language.</div>
+<pre><span class="t">const</span> res = <span class="t">await</span> fetch(<span class="x">"/api/notes"</span>);
+<span class="t">const</span> data = <span class="t">await</span> res.json();</pre>
+        <ul>
+          <li><code>fetch("/api/notes")</code> — GET that path. Relative URL: same site as this page.</li>
+          <li><code>res</code> — the response object (status + body). Not the array yet.</li>
+          <li><code>res.json()</code> — parse the body as JSON. Also async, so <code>await</code> again.</li>
+          <li><code>data</code> — now a real array of note objects, like you built in JS.</li>
+        </ul>
+        <p>This course intercepts paths containing <code>/api/</code> inside the page, so the Lab works without a real Java server. Same <code>fetch</code> spelling you would use against Spring later.</p>
+        <div class="callout warn">Forget <code>await</code> and <code>data</code> is a Promise, not an array. The list looks empty. Add <code>await</code>.</div>
       `,
       exercise: {
         type: "js-async",
         prompt:
-          "Write async function listExpenses() that GET /api/expenses and returns the parsed JSON array.",
-        starter: "async function listExpenses() {\n  \n}",
+          "Write async function listNotes() that GET /api/notes and returns the parsed JSON array.",
+        starter: "async function listNotes() {\n  \n}",
         tests: [
           {
-            expr: "(await listExpenses()).length >= 2",
+            expr: "(await listNotes()).length >= 2",
             eq: true,
-            msg: "Should return the seeded list (at least Coffee and Bus)",
+            msg: "Should return the seeded list (at least two notes)",
           },
           {
-            expr: "(await listExpenses()).some(e => e.description === 'Coffee')",
+            expr: "(await listNotes()).some(n => n.title === 'Hello')",
             eq: true,
-            msg: "Should include Coffee",
+            msg: "Should include a note titled Hello",
           },
         ],
       },
@@ -167,34 +168,35 @@ window.LEARN_TRACKS.push({
       title: "fetch POST",
       words: ["fetch", "post", "json"],
       body: `
-        <p>Create needs a method and a body. You must say it's JSON:</p>
-<pre><span class="t">const</span> res = <span class="t">await</span> fetch(<span class="x">"/api/expenses"</span>, {
+        <p>GET only needs a URL. POST needs extra options: the verb, the fact that the body is JSON, and the body itself.</p>
+<pre><span class="t">const</span> res = <span class="t">await</span> fetch(<span class="x">"/api/notes"</span>, {
   method: <span class="x">"POST"</span>,
   headers: { <span class="x">"Content-Type"</span>: <span class="x">"application/json"</span> },
-  body: JSON.stringify({
-    description: <span class="x">"Tea"</span>,
-    amount: 3,
-    category: <span class="x">"Food"</span>
-  })
+  body: JSON.stringify({ title: <span class="x">"Hi"</span>, text: <span class="x">"There"</span> })
 });
-<span class="t">const</span> created = <span class="t">await</span> res.json();  <span class="c">// includes id from server</span></pre>
-        <p>The server assigns <code>id</code>. Don't invent ids on the client if the API owns them.</p>
-        <p>This mock returns <code>201</code> plus the new object. A real Spring <code>@PostMapping</code> does the same.</p>
+<span class="t">const</span> created = <span class="t">await</span> res.json();</pre>
+        <ul>
+          <li>Second argument to <code>fetch</code> is an object of options.</li>
+          <li><code>method: "POST"</code> — create, not read. If you omit this, you GET by accident.</li>
+          <li><code>headers</code> — extra labels on the envelope. <code>Content-Type: application/json</code> tells the server “parse this body as JSON,” not as a form.</li>
+          <li><code>body</code> — must be a <em>string</em>. <code>JSON.stringify</code> turns your object into that string. Passing the object raw is a common bug.</li>
+          <li><code>created</code> — usually the saved note, now with an <code>id</code> the server assigned. You did not pick the id.</li>
+        </ul>
+        <p>Empty title → this Lab’s mock returns <code>400</code>, same as your <code>if</code>. Check <code>res.ok</code> or <code>res.status</code> if you need to show an error instead of assuming success.</p>
       `,
       exercise: {
         type: "js-async",
         prompt:
-          "Write async function createExpense(desc, amount, category) that POSTs JSON to /api/expenses and returns the created object (with id).",
-        starter:
-          "async function createExpense(desc, amount, category) {\n  \n}",
+          "Write async function createNote(title, text) that POSTs JSON to /api/notes and returns the created object (with id).",
+        starter: "async function createNote(title, text) {\n  \n}",
         tests: [
           {
-            expr: "(await createExpense('SkillCheckSnack', 1.25, 'Food')).description",
+            expr: "(await createNote('SkillCheckSnack', 'x')).title",
             eq: "SkillCheckSnack",
-            msg: "Returned object should include the description you sent",
+            msg: "Returned object should include the title you sent",
           },
           {
-            expr: "typeof (await createExpense('SkillCheckSnack2', 1.25, 'Food')).id",
+            expr: "typeof (await createNote('SkillCheckSnack2', 'x')).id",
             eq: "number",
             msg: "Server should assign a numeric id",
           },
@@ -203,33 +205,40 @@ window.LEARN_TRACKS.push({
     },
     {
       id: "http-6",
-      title: "Anatomy of one request (Network tab)",
+      title: "One request, five parts",
       words: ["request", "response", "headers"],
       body: `
-        <p>Every <code>fetch</code> is the same five parts. Open DevTools → <strong>Network</strong>, click Add in the Lab, click the row:</p>
+        <p>When something fails, do not rewrite the whole app. Name the five parts of the round trip:</p>
         <table class="plain">
-          <tr><td>Method</td><td><code>POST</code></td></tr>
-          <tr><td>URL</td><td><code>/api/expenses</code></td></tr>
-          <tr><td>Headers</td><td>metadata. <code>Content-Type: application/json</code> means "body is JSON"</td></tr>
-          <tr><td>Body</td><td>the Expense as JSON</td></tr>
-          <tr><td>Status + body back</td><td><code>201</code> + the saved object with <code>id</code></td></tr>
+          <tr><td>Method</td><td>GET / POST / PUT / DELETE</td></tr>
+          <tr><td>URL</td><td>e.g. <code>/api/notes</code> or <code>/api/notes/3</code></td></tr>
+          <tr><td>Headers</td><td>labels, especially <code>Content-Type: application/json</code> on POST</td></tr>
+          <tr><td>Body</td><td>JSON text you sent (GET usually has none)</td></tr>
+          <tr><td>Status + body back</td><td>e.g. <code>201</code> + the saved object with <code>id</code></td></tr>
         </table>
-        <p>That is the whole conversation. Spring's job is to receive those five and run your Java. REST's job is to pick boring URLs so everyone guesses the same five.</p>
-        <div class="callout tip">If a feature "doesn't work," Network is the first stop: did the request leave? Status 4xx you sent junk. 5xx the server threw. No row = JS never called fetch.</div>
+        <div class="callout word"><strong>New word — headers.</strong> Extra key/value labels on the request or response. Not the note itself. Content-Type is a header. Status is not a header; it is the code.</div>
+        <p>Open the Lab, click Add, and think in those five parts. Then map the failure:</p>
+        <ul>
+          <li><code>400</code> → look at the body you sent (empty title? bad JSON?)</li>
+          <li><code>404</code> → look at the URL (wrong id?)</li>
+          <li><code>500</code> → the other program threw</li>
+          <li>No row in the network log → JavaScript never called <code>fetch</code> (click handler, or you forgot to attach it)</li>
+        </ul>
+        <p>That is the same debug ritual as three copies of state, with two programs instead of one.</p>
       `,
       exercise: {
         type: "choice",
         prompt: "The Lab POST returns 400. Where do you look first?",
         options: [
-          { id: "a", text: "Rewrite Spring. It's always Spring.", ok: false },
+          { id: "a", text: "Rewrite the server immediately", ok: false },
           {
             id: "b",
-            text: "The request body/headers — 400 means the client sent junk",
+            text: "The request body — 400 means this side sent junk",
             ok: true,
           },
           { id: "c", text: "CSS", ok: false },
         ],
-        why: "400 = validation. You already wrote that in Main. Network tab shows the body you actually sent.",
+        why: "400 = validation. You already wrote that as if.",
       },
     },
   ],

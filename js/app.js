@@ -71,25 +71,20 @@
 
   function shell(tab, inner) {
     const g = Game.hud();
-    const combo =
-      g.combo >= 2
-        ? `<span class="combo" title="correct in a row">x${g.combo}</span>`
-        : "";
     return `
       <header class="app-top">
         <a class="brand" href="#/"><span class="mark" aria-hidden="true"></span>Web Dev <em>Lab</em></a>
         <div class="grow"></div>
-        ${combo}
-        <div class="hud" title="${esc(g.rank.blurb)}">
-          <span class="hud-rank">${esc(g.rank.name)}</span>
+        <div class="hud" title="Lessons finished">
+          <span class="hud-rank">Done</span>
           <div class="progress-mini"><i style="width:${g.pct}%"></i></div>
-          <span class="hud-xp">${g.xp} XP</span>
+          <span class="hud-xp">${g.done}/${g.total}</span>
         </div>
       </header>
       <main class="wrap">${inner}</main>
       <nav class="botnav">
         <a href="#/" class="${tab === "home" ? "on" : ""}">${ICONS.home}Home</a>
-        <a href="#/learn" class="${tab === "learn" ? "on" : ""}">${ICONS.learn}Quests</a>
+        <a href="#/learn" class="${tab === "learn" ? "on" : ""}">${ICONS.learn}Lessons</a>
         <a href="#/lab" class="${tab === "lab" ? "on" : ""}">${ICONS.lab}Lab</a>
         <a href="#/words" class="${tab === "words" ? "on" : ""}">${ICONS.words}Words</a>
       </nav>`;
@@ -161,14 +156,6 @@
     return null;
   }
 
-  function renderBadges() {
-    const got = Store.get().badges || {};
-    return `<div class="badge-row">${Game.BADGES.map(
-      (b) =>
-        `<span class="mini-badge ${got[b.id] ? "on" : ""}" title="${esc(b.hint)}">${esc(b.name)}</span>`,
-    ).join("")}</div>`;
-  }
-
   function renderHome() {
     const check = Store.get().check;
     const ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
@@ -208,15 +195,14 @@
         lastLink = `<a class="btn ghost" href="#/learn/${last.trackId}/${last.lessonId}">Back to: ${esc(ll.title)}</a>`;
       }
     }
-    const g = Game.hud();
     app.innerHTML = shell(
       "home",
       `
       ${install}
       <section class="hero">
-        <span class="badge">${esc(g.rank.name)}</span>
-        <h1>Start with a page. Names come later.</h1>
-        <p>You can write Java. A website is files a browser shows. We'll do one small thing at a time — a tag, then a color, then a click. Words like API and Spring wait until you can point at them.</p>
+        <span class="badge">HTML has not happened yet</span>
+        <h1>You can write Java. You have not written a webpage.</h1>
+        <p>You know objects, forcing input, and <code>if</code>. None of that is HTML. This course starts from one tag, then paint, then a click. No app you already built is required.</p>
         <div class="row">
           ${
             nq
@@ -230,21 +216,18 @@
       ${
         nq
           ? `<a class="card next-quest" href="#/learn/${nq.track.id}/${nq.lesson.id}">
-              <div class="demo-label">Current quest</div>
+              <div class="demo-label">Continue</div>
               <h3>${esc(questName(nq.track))} · ${esc(nq.lesson.title)}</h3>
               <p>${esc(nq.track.blurb)}</p>
-              <div class="meta">+${Game.XP.lesson} XP on first clear</div>
             </a>`
           : ""
       }
       ${pipelineStrip(nq ? nq.track.id : "pwa")}
       ${check ? renderCheckSummary(check) : `<div class="callout tip"><strong>Skip the quiz if you want.</strong> Start the first lesson. New words get an orange box. Skip exists if a checker is picky.</div>`}
-      <h2>Badges</h2>
-      ${renderBadges()}
-      <h2>Quest line</h2>
+      <h2>Chapters</h2>
       ${questPathHtml()}
-      <div class="callout java">This site is just files. The playground (Lab) comes after you can make a page. You do not need Spring to start.</div>
-      <p class="sub" style="color:var(--muted);font-family:system-ui;font-size:0.85rem">Classic HTML files: <a href="lessons/01-what-is-a-tag.html">lessons/</a>. <button class="btn ghost" id="reset-progress" type="button">Reset save</button></p>
+      <div class="callout java">Java stays in your pocket. HTML is new. CSS is paint. JavaScript is a second language with objects and if. Spring is optional and last.</div>
+      <p class="sub" style="color:var(--muted);font-family:system-ui;font-size:0.85rem"><button class="btn ghost" id="reset-progress" type="button">Reset save</button></p>
     `,
     );
 
@@ -302,9 +285,9 @@
     app.innerHTML = shell(
       "learn",
       `
-      <span class="badge">One step at a time</span>
-      <h1>Page first. Fancy words later.</h1>
-      <p>You already code in Java. Do these in order. If a word is new, the lesson boxes it. Use Skip if a checker nags.</p>
+      <span class="badge">From zero HTML</span>
+      <h1>A page, then paint, then a click.</h1>
+      <p>Do these in order. You have not written HTML yet until that chapter. CSS cannot run <code>if</code>. JavaScript is not Java. Skip exists if a checker nags.</p>
       ${pipelineStrip(nextQuest() ? nextQuest().track.id : "pwa")}
       ${questPathHtml()}
     `,
@@ -320,7 +303,7 @@
         return `<a class="step ${done ? "done" : ""}" href="#/learn/${t.id}/${l.id}">
           <span class="step-n">${String(i + 1).padStart(2, "0")}</span>
           <span class="step-t">${esc(l.title)}</span>
-          <span class="step-m">${done ? "Cleared" : "Open"}</span>
+          <span class="step-m">${done ? "Done" : "Not yet"}</span>
         </a>`;
       })
       .join("");
@@ -333,7 +316,7 @@
         ${
           prevT
             ? `<a href="#/learn/${prevT.id}">← ${esc(questName(prevT))}</a>`
-            : `<a href="#/learn">← Quest log</a>`
+            : `<a href="#/learn">← All lessons</a>`
         }
         ${
           nxtT
@@ -346,11 +329,6 @@
       <h1>${esc(t.title)}</h1>
       <p>${esc(t.blurb)}</p>
       <div class="callout java">${esc(t.youKnow)}</div>
-      ${
-        t.id === "html"
-          ? `<div class="callout tip">Optional Cursor mode: original fill-in-the-blank files still live in <code>lessons/</code> and <code>exercises/</code>. The PWA lessons below check you in the browser.</div>`
-          : ""
-      }
       <div class="steps">${items}</div>
     `,
     );
@@ -363,7 +341,7 @@
       : `<a href="#/learn/${track.id}">← ${esc(questName(track))}</a>`;
     const fwd = next
       ? `<a href="${lessonHref(next)}">${esc(next.lesson.title)} →</a>`
-      : `<a href="#/lab">Capstone: the Lab →</a>`;
+      : `<a href="#/lab">Lab →</a>`;
     return `<div class="lesson-nav${top ? " top" : ""}">${back}${fwd}</div>`;
   }
 
@@ -404,10 +382,10 @@
         const box = document.createElement("p");
         box.className = "msg ok";
         const xpBit = skipped
-          ? "Checker skipped. "
+          ? "Skipped. "
           : win.first
-            ? `+${win.xp} XP. `
-            : "Already cleared — combo still counts. ";
+            ? "Done. "
+            : "Already done. ";
         const back = n.prev
           ? `<a href="${lessonHref(n.prev)}">← Back</a> `
           : "";
@@ -422,18 +400,35 @@
   }
 
   function styleMatches(actual, expected) {
-    const a = String(actual).toLowerCase().replace(/\s+/g, "");
-    const e = String(expected).toLowerCase();
-    if (String(actual).toLowerCase().includes(e)) return true;
-    if (e === "red" && (a.includes("rgb(255,0,0)") || a === "red")) return true;
-    if (e === "navy" && (a.includes("rgb(0,0,128)") || a === "navy"))
+    const raw = String(actual).toLowerCase().trim();
+    const e = String(expected).toLowerCase().trim();
+    if (!e) return true;
+    const compact = raw.replace(/\s+/g, "");
+    const nums = (raw.match(/[\d.]+/g) || []).map(Number);
+    if (/^\d+$/.test(e)) {
+      return compact === e || compact === e + "px";
+    }
+    if (raw.includes(e) || compact.includes(e.replace(/\s+/g, ""))) return true;
+    if (e === "red") {
+      if (raw === "red" || compact.includes("rgb(255,0,0)")) return true;
+      if (nums.length >= 3 && nums[0] === 255 && nums[1] === 0 && nums[2] === 0)
+        return true;
+      if (/srgb/.test(raw) && nums[0] === 1 && nums[1] === 0 && nums[2] === 0)
+        return true;
+    }
+    if (e === "navy") {
+      if (raw === "navy" || compact.includes("rgb(0,0,128)")) return true;
+      if (nums.length >= 3 && nums[0] === 0 && nums[1] === 0 && nums[2] === 128)
+        return true;
+    }
+    if (e === "bold" && (compact.includes("700") || compact.includes("bold")))
       return true;
-    if (e === "bold" && (a.includes("700") || a.includes("bold"))) return true;
-    if (e === "16" && (a.includes("16px") || a === "16")) return true;
-    if (e === "12" && (a.includes("12px") || a === "12")) return true;
-    if (e === "8" && (a.includes("8px") || a === "8")) return true;
-    if (e === "2" && (a.startsWith("2px") || a === "2")) return true;
-    return a.includes(e.replace(/\s+/g, ""));
+    return false;
+  }
+
+  function computedStyle(el, prop) {
+    const cs = el.ownerDocument.defaultView.getComputedStyle(el);
+    return cs.getPropertyValue(prop) || cs[prop] || "";
   }
 
   function iframeDoc(srcdoc, host) {
@@ -441,15 +436,28 @@
       const iframe = document.createElement("iframe");
       iframe.className = "preview-frame";
       iframe.setAttribute("sandbox", "allow-scripts allow-same-origin");
-      const t = setTimeout(() => reject(new Error("preview timeout")), 2500);
-      iframe.onload = () => {
+      let settled = false;
+      const t = setTimeout(() => {
+        if (!settled) reject(new Error("preview timeout"));
+      }, 2500);
+      const finish = () => {
+        if (settled) return;
+        const doc = iframe.contentDocument;
+        if (!doc || !doc.body) return;
+        const url = String(doc.URL || "");
+        if (url === "about:blank") return;
+        settled = true;
         clearTimeout(t);
         resolve(iframe);
       };
+      iframe.onload = finish;
       iframe.onerror = () => {
+        if (settled) return;
+        settled = true;
         clearTimeout(t);
         reject(new Error("preview failed"));
       };
+      iframe.srcdoc = srcdoc;
       if (host) {
         host.innerHTML = "";
         host.appendChild(iframe);
@@ -458,7 +466,6 @@
           "position:fixed;left:-9999px;width:400px;height:200px";
         document.body.appendChild(iframe);
       }
-      iframe.srcdoc = srcdoc;
     });
   }
 
@@ -475,13 +482,14 @@
       if (c.count != null && nodes.length !== c.count) {
         return { ok: false, msg: c.msg };
       }
+      if (c.count === 0) continue;
       const el = c.nth != null ? nodes[c.nth] : nodes[0];
       if (!el) return { ok: false, msg: c.msg };
       if (c.text && !(el.textContent || "").includes(c.text)) {
         return { ok: false, msg: c.msg };
       }
       if (c.style) {
-        const val = doc.defaultView.getComputedStyle(el)[c.style];
+        const val = computedStyle(el, c.style);
         if (!styleMatches(val, c.includes)) return { ok: false, msg: c.msg };
       }
     }
@@ -667,7 +675,21 @@
     }
 
     if (ex.type === "js") return runJsTests(code, ex.tests, false);
-    if (ex.type === "js-async") return runJsTests(code, ex.tests, true);
+    if (ex.type === "js-async") {
+      const prev =
+        typeof localStorage !== "undefined"
+          ? localStorage.getItem("webdev-pwa-notes")
+          : null;
+      try {
+        if (typeof MockApi !== "undefined" && MockApi.reset) MockApi.reset();
+        return await runJsTests(code, ex.tests, true);
+      } finally {
+        if (typeof localStorage !== "undefined") {
+          if (prev == null) localStorage.removeItem("webdev-pwa-notes");
+          else localStorage.setItem("webdev-pwa-notes", prev);
+        }
+      }
+    }
 
     if (ex.type === "html") {
       if (ex.requireDoctype && !/^\s*<!doctype html>/i.test(code)) {
@@ -696,9 +718,13 @@
       } catch (err) {
         return { ok: false, msg: err.message };
       }
-      const after = ex.checks.find((c) => c.after);
-      if (after) after.after(iframe.contentDocument);
-      return checkDom(iframe.contentDocument, ex.checks);
+      const doc = iframe.contentDocument;
+      if (typeof ex.after === "function") ex.after(doc);
+      else {
+        const after = (ex.checks || []).find((c) => c.after);
+        if (after) after.after(doc);
+      }
+      return checkDom(doc, ex.checks);
     }
 
     return { ok: false, msg: "Unknown exercise type" };
@@ -742,13 +768,13 @@
     if (i >= qs.length) return finishCheck();
     const q = qs[i];
     const prevHref = i > 0 ? `#/check/${i}` : "#/";
-    const prevLabel = i > 0 ? `← Room ${i}` : "← Camp";
+    const prevLabel = i > 0 ? `← Question ${i}` : "← Home";
     const fwd =
       checkAnswers[i] && i + 1 < qs.length
-        ? `<a href="#/check/${i + 2}">Room ${i + 2} →</a>`
+        ? `<a href="#/check/${i + 2}">Question ${i + 2} →</a>`
         : checkAnswers[i]
           ? `<a href="#/check/done">Results →</a>`
-          : `<span class="q-num">Room ${i + 1} / ${qs.length}</span>`;
+          : `<span class="q-num">Question ${i + 1} / ${qs.length}</span>`;
     app.innerHTML = shell(
       "home",
       `
@@ -756,7 +782,7 @@
         <a href="${prevHref}" id="check-back">${prevLabel}</a>
         ${fwd}
       </div>
-      <p class="q-num">Room ${i + 1} / ${qs.length} · ${esc(q.track)}</p>
+      <p class="q-num">Question ${i + 1} / ${qs.length} · ${esc(q.track)}</p>
       <h1>Optional quiz</h1>
       <p>Skip any question. Wrong still advances. This is a peek, not a grade.</p>
       <section class="ex" id="ex"></section>
@@ -819,14 +845,14 @@
       "home",
       `
       <div class="lesson-nav top">
-        <a href="#/check/${lastQ}">← Last room</a>
-        <a href="#/">Camp →</a>
+        <a href="#/check/${lastQ}">← Last question</a>
+        <a href="#/">Home →</a>
       </div>
       <span class="badge">Quiz done</span>
-      <h1>${weak.length ? "A few soft spots. Start the first lesson anyway." : "Nice. Now do First steps even if this felt easy."}</h1>
+      <h1>${weak.length ? "A few soft spots. Start the first lesson anyway." : "Nice. HTML still starts from one tag."}</h1>
       ${renderCheckSummary({ scores, weak })}
       <div class="row">
-        <a class="btn" href="#/learn/${start}">Quest: ${esc(startTitle)}</a>
+        <a class="btn" href="#/learn/${start}">Chapter: ${esc(startTitle)}</a>
         <a class="btn ghost" href="#/" id="start-check">Retake</a>
       </div>
     `,
@@ -846,16 +872,15 @@
       `
       <span class="badge">Playground</span>
       <h1>The Lab</h1>
-      <p>Come back here after you can make a page and a click. Same add / list / delete as your CLI, as messages. The log at the right is “what just got sent.”</p>
+      <p>Come here after you can make a page and a click. Notes: a title and some text. Empty title is rejected (400). The log on the right is the message that was sent.</p>
       <div class="lab-desk">
         <div>
           <form class="ex" id="lab-form">
             <div class="row">
-              <input class="line" name="description" placeholder="Description" required>
-              <input class="line" name="amount" type="number" step="0.01" placeholder="Amount" required>
-              <input class="line" name="category" placeholder="Category" required>
+              <input class="line" name="title" placeholder="Title" required>
+              <input class="line" name="text" placeholder="Text">
             </div>
-            <button class="btn" type="submit">POST /api/expenses</button>
+            <button class="btn" type="submit">POST /api/notes</button>
             <button class="btn ghost" type="button" id="lab-reload">GET list</button>
             <button class="btn ghost" type="button" id="lab-reset">Reset seed data</button>
           </form>
@@ -881,39 +906,38 @@
     });
 
     async function refresh() {
-      const res = await fetch("/api/expenses");
+      const res = await fetch("/api/notes");
       const rows = await res.json();
       const list = document.getElementById("lab-list");
       list.innerHTML =
         rows
           .map(
             (r) => `<div class="lab-item">
-            <span>${esc(r.description)} · ${esc(r.category)} · $${Number(r.amount).toFixed(2)} <span class="mono">#${r.id}</span></span>
+            <span>${esc(r.title)} — ${esc(r.text)} <span class="mono">#${r.id}</span></span>
             <span>
-              <button type="button" data-put="${r.id}">PUT +1</button>
+              <button type="button" data-put="${r.id}">PUT append !</button>
               <button type="button" data-del="${r.id}">DELETE</button>
             </span>
           </div>`,
           )
-          .join("") || "<p>No expenses.</p>";
-      const total = rows.reduce((s, r) => s + Number(r.amount), 0);
+          .join("") || "<p>No notes.</p>";
       document.getElementById("lab-total").innerHTML =
-        `Total: <strong>$${total.toFixed(2)}</strong>`;
+        `Count: <strong>${rows.length}</strong>`;
       list.querySelectorAll("[data-del]").forEach((b) => {
         b.onclick = async () => {
-          await fetch("/api/expenses/" + b.dataset.del, { method: "DELETE" });
+          await fetch("/api/notes/" + b.dataset.del, { method: "DELETE" });
           refresh();
         };
       });
       list.querySelectorAll("[data-put]").forEach((b) => {
         b.onclick = async () => {
           const row = rows.find((r) => String(r.id) === b.dataset.put);
-          await fetch("/api/expenses/" + row.id, {
+          await fetch("/api/notes/" + row.id, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               ...row,
-              amount: Math.round((row.amount + 1) * 100) / 100,
+              text: String(row.text || "") + "!",
             }),
           });
           refresh();
@@ -924,15 +948,18 @@
     document.getElementById("lab-form").onsubmit = async (e) => {
       e.preventDefault();
       const fd = new FormData(e.target);
-      await fetch("/api/expenses", {
+      const res = await fetch("/api/notes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          description: fd.get("description"),
-          amount: Number(fd.get("amount")),
-          category: fd.get("category"),
+          title: fd.get("title"),
+          text: fd.get("text") || "",
         }),
       });
+      if (!res.ok) {
+        refresh();
+        return;
+      }
       e.target.reset();
       Game.labPost();
       refresh();

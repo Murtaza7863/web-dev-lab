@@ -1,13 +1,13 @@
 const MockApi = (() => {
-  const KEY = "webdev-pwa-expenses";
+  const KEY = "webdev-pwa-notes";
   const nativeFetch = window.fetch.bind(window);
   const listeners = new Set();
   let seq = 3;
 
   function seed() {
     return [
-      { id: 1, description: "Coffee", amount: 4.5, category: "Food" },
-      { id: 2, description: "Bus", amount: 30, category: "Transport" },
+      { id: 1, title: "Hello", text: "First note" },
+      { id: 2, title: "Hi", text: "Second note" },
     ];
   }
 
@@ -30,7 +30,7 @@ const MockApi = (() => {
   function reset() {
     write(seed());
     seq = 3;
-    emit({ method: "RESET", path: "/api/expenses", status: 200, body: seed() });
+    emit({ method: "RESET", path: "/api/notes", status: 200, body: seed() });
   }
 
   function emit(entry) {
@@ -73,25 +73,18 @@ const MockApi = (() => {
     let body;
 
     const rows = read();
-    const idMatch = path.match(/^\/api\/expenses\/(\d+)$/);
+    const idMatch = path.match(/^\/api\/notes\/(\d+)$/);
 
-    if (path === "/api/expenses" && method === "GET") {
+    if (path === "/api/notes" && method === "GET") {
       body = rows;
-    } else if (path === "/api/expenses" && method === "POST") {
-      if (
-        !reqBody ||
-        !reqBody.description ||
-        typeof reqBody.amount !== "number"
-      ) {
+    } else if (path === "/api/notes" && method === "POST") {
+      const title = reqBody && String(reqBody.title || "").trim();
+      const text = reqBody ? String(reqBody.text || "") : "";
+      if (!title) {
         status = 400;
-        body = { error: "Need JSON { description, amount, category }" };
+        body = { error: "Need JSON { title, text } with a non-empty title" };
       } else {
-        const row = {
-          id: seq++,
-          description: String(reqBody.description),
-          amount: Number(reqBody.amount),
-          category: String(reqBody.category || "Other"),
-        };
+        const row = { id: seq++, title, text };
         rows.push(row);
         write(rows);
         status = 201;

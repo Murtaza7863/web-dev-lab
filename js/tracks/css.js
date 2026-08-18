@@ -2,35 +2,38 @@ window.LEARN_TRACKS = window.LEARN_TRACKS || [];
 window.LEARN_TRACKS.push({
   id: "css",
   title: "CSS",
-  quest: "The Look",
-  blurb: "How the page looks — color, space. The words don't change.",
+  quest: "CSS",
+  blurb:
+    "You already have HTML. CSS only changes how those tags look. It cannot run if.",
   youKnow:
-    "Your terminal is one font, one color. CSS is the extra file that paints the page.",
+    "You can write tags. This chapter is paint: color, space, rows. Not logic.",
   lessons: [
     {
       id: "css-1",
-      title: "CSS is rules",
+      title: "Paint, not if",
       words: ["css", "selector"],
       body: `
-        <p><strong>CSS</strong> means Cascading Style Sheets — a fussy name for “paint rules.”</p>
-        <div class="callout word"><strong>New word — CSS.</strong> A second file (or box) that says how HTML should look. HTML = the words. CSS = the look.</div>
-        <p>A rule has two parts:</p>
+        <p>You just learned HTML. The page exists: headings, paragraphs, maybe a box. It may look plain. <strong>CSS</strong> is a second language of instructions that only change <em>how those tags look</em>.</p>
+        <div class="callout word"><strong>New word — CSS.</strong> Cascading Style Sheets — a fussy name for paint instructions. HTML = what is on the page. CSS = color, size, spacing. Not Java. Not JavaScript. CSS cannot create an object and cannot run <code>if (age &lt; 0)</code>.</div>
+        <p>A CSS instruction has two parts:</p>
 <pre><span class="t">h1</span> <span class="x">{</span>
   <span class="a">color</span><span class="x">: red;</span>
 <span class="x">}</span></pre>
         <ul>
-          <li><code>h1</code> — the <strong>selector</strong> (which elements)</li>
-          <li><code>color: red;</code> — the <strong>declaration</strong> (what to change)</li>
+          <li><code>h1</code> — <strong>selector</strong>: which elements this applies to. Here, every <code>&lt;h1&gt;</code> on the page.</li>
+          <li><code>{ }</code> — a block of declarations, like braces in Java.</li>
+          <li><code>color</code> — the <strong>property</strong> (what to change)</li>
+          <li><code>red</code> — the <strong>value</strong></li>
+          <li>The colon <code>:</code> sits between property and value. The semicolon <code>;</code> ends the line. Forgetting the semicolon is a common bug.</li>
         </ul>
-        <p>Hook CSS to HTML with a class or by tagging the element name.</p>
-        <div class="callout java">Like setting fields on an object after you construct it. The HTML element already exists; CSS mutates how it's drawn.</div>
-        <p>In this course you'll type CSS in the exercise box. In a real file you'd put it in <code>style.css</code> and link it from <code>&lt;head&gt;</code>:</p>
-<pre><span class="t">&lt;link </span><span class="a">rel</span><span class="t">=</span><span class="x">"stylesheet"</span> <span class="a">href</span><span class="t">=</span><span class="x">"style.css"</span><span class="t">&gt;</span></pre>
+        <div class="callout word"><strong>New word — selector.</strong> The part before the <code>{</code>. It answers “which tags?”</div>
+        <p>In a real project this text lives in <code>style.css</code>, and HTML attaches it with <code>&lt;link rel="stylesheet" href="style.css"&gt;</code> in <code>head</code> (you practiced that). In this course you type CSS in the exercise box; the site applies it to a tiny preview.</p>
+        <p>This rule does not change a <code>&lt;p&gt;</code>. Only <code>h1</code>. That is the point of a selector.</p>
       `,
       exercise: {
         type: "css",
         prompt: "Make every h1 red (color: red is fine).",
-        fixture: "<h1>Expense Tracker</h1><p>Not a heading</p>",
+        fixture: "<h1>Hello</h1><p>Not a heading</p>",
         starter: "h1 {\n  \n}",
         checks: [
           {
@@ -44,64 +47,67 @@ window.LEARN_TRACKS.push({
     },
     {
       id: "css-2",
-      title: "Selectors: element, class, id",
+      title: "Which tags: element, class, id",
       words: ["selector"],
       body: `
-        <p>Three selectors you'll use constantly:</p>
-<pre><span class="t">p</span> <span class="x">{ }</span>          <span class="c">/* every paragraph */</span>
-<span class="t">.item</span> <span class="x">{ }</span>      <span class="c">/* class="item"  note the dot */</span>
-<span class="t">#total</span> <span class="x">{ }</span>     <span class="c">/* id="total"    note the hash */</span></pre>
-        <p>Class = many. Id = one. That's why HTML <code>class</code> vs <code>id</code> exists.</p>
-        <p>You can combine: <code>li.item</code> means an <code>li</code> that also has class item.</p>
-        <div class="callout warn">Forgetting the dot is the #1 beginner bug: <code>item { }</code> looks for a tag named item, which doesn't exist. You meant <code>.item</code>.</div>
+        <p>You need more than “every <code>h1</code>.” Sometimes you want every paragraph. Sometimes only some paragraphs. Sometimes exactly one box. CSS has three everyday selectors for that:</p>
+<pre><span class="t">p</span> <span class="x">{ }</span>          <span class="c">/* every &lt;p&gt; — element selector */</span>
+<span class="t">.card</span> <span class="x">{ }</span>      <span class="c">/* every tag with class="card" — the dot is required */</span>
+<span class="t">#hello</span> <span class="x">{ }</span>     <span class="c">/* the one tag with id="hello" — the hash is required */</span></pre>
+        <p><strong>Element selector</strong> — just the tag name. <code>p</code> hits all paragraphs. Broad.</p>
+        <p><strong>Class selector</strong> — a dot plus the class name. In HTML you wrote <code>class="card"</code>. In CSS you write <code>.card</code>. Many elements may share a class, so you can paint a group at once.</p>
+        <p><strong>Id selector</strong> — a hash <code>#</code> plus the id. In HTML, <code>id="hello"</code>. In CSS, <code>#hello</code>. One per page. Use it when you mean that exact box.</p>
+        <p>That is why HTML has both <code>class</code> and <code>id</code>: class = many, id = one.</p>
+        <div class="callout warn">The usual bug: writing <code>card { }</code> with no dot. The browser looks for a tag named <code>&lt;card&gt;</code>, which does not exist. You meant <code>.card</code>. Same for id: <code>hello { }</code> is not <code>#hello</code>.</div>
+        <p>You can write two rules in one file, one after another. They both apply.</p>
       `,
       exercise: {
         type: "css",
         prompt:
-          "Make .price bold (font-weight: bold) and #total the color navy.",
-        fixture:
-          '<p>Coffee <span class="price">$4.50</span></p><p id="total">$4.50</p>',
-        starter: ".price {\n\n}\n#total {\n\n}",
+          "Make .name bold (font-weight: bold) and #hello the color navy.",
+        fixture: '<p><span class="name">Ada</span></p><p id="hello">Hi</p>',
+        starter: ".name {\n\n}\n#hello {\n\n}",
         checks: [
           {
-            sel: ".price",
+            sel: ".name",
             style: "font-weight",
             includes: "bold",
-            msg: ".price should be bold (font-weight)",
+            msg: ".name should be bold (font-weight)",
           },
           {
-            sel: "#total",
+            sel: "#hello",
             style: "color",
             includes: "navy",
-            msg: "#total color should be navy",
+            msg: "#hello color should be navy",
           },
         ],
       },
     },
     {
       id: "css-3",
-      title: "The box model",
+      title: "Every tag is a box",
       words: ["box-model"],
       body: `
-        <p>Every element is a box:</p>
+        <p>The browser draws every element as a rectangle. That rectangle has layers, from the inside out:</p>
         <ol>
-          <li><strong>content</strong> — the text/image</li>
-          <li><strong>padding</strong> — space inside the border</li>
-          <li><strong>border</strong> — the edge</li>
-          <li><strong>margin</strong> — space outside, between this box and neighbors</li>
+          <li><strong>content</strong> — the text (or image) itself</li>
+          <li><strong>padding</strong> — empty space <em>inside</em> the border, around the content. Makes a card feel less cramped.</li>
+          <li><strong>border</strong> — the visible edge. Width, style (solid, dashed), color.</li>
+          <li><strong>margin</strong> — empty space <em>outside</em> the border, between this box and neighbors.</li>
         </ol>
+        <div class="callout word"><strong>New word — box model.</strong> Content + padding + border + margin. If a layout looks “too tight” or “too far from the next thing,” you are usually missing padding or margin.</div>
 <pre><span class="t">.card</span> <span class="x">{</span>
   <span class="a">padding</span><span class="x">: 12px;</span>
   <span class="a">margin</span><span class="x">: 8px;</span>
   <span class="a">border</span><span class="x">: 1px solid black;</span>
 <span class="x">}</span></pre>
-        <p><code>box-sizing: border-box</code> makes width include padding+border. Almost everyone wants this. This PWA uses it.</p>
-        <div class="callout java">Margin is like blank lines between <code>System.out.println</code> calls. Padding is space inside the card, like indenting fields in a class.</div>
+        <p><code>12px</code> means 12 pixels — a pixel is one dot on the screen. <code>border: 1px solid black</code> is a shortcut: thickness, style, color in one line.</p>
+        <p>Padding is “space inside the card.” Margin is “space between cards.” Mixing them up is normal at first. Change one, look at the preview, then the other.</p>
       `,
       exercise: {
         type: "css",
         prompt: "Give .card 16px padding and a 2px solid black border.",
-        fixture: '<div class="card">Coffee — $4.50</div>',
+        fixture: '<div class="card">Hi</div>',
         starter: ".card {\n\n}",
         checks: [
           {
@@ -121,24 +127,28 @@ window.LEARN_TRACKS.push({
     },
     {
       id: "css-4",
-      title: "Flexbox (layout in a row or column)",
+      title: "A row: flexbox",
       words: ["flexbox"],
       body: `
-        <p>Flexbox is how you put things in a row or a column without fighting floats.</p>
+        <p>By default, block boxes stack vertically (a heading, then a paragraph, then another). Often you want two things on the <em>same row</em>: a name on the left, a short word on the right.</p>
+        <p><strong>Flexbox</strong> is the CSS tool for “line these children up in a row or a column.” You turn it on with <code>display: flex</code> on the <em>parent</em>.</p>
 <pre><span class="t">.row</span> <span class="x">{</span>
   <span class="a">display</span><span class="x">: flex;</span>
-  <span class="a">justify-content</span><span class="x">: space-between;</span>  <span class="c">/* main axis */</span>
-  <span class="a">align-items</span><span class="x">: center;</span>             <span class="c">/* cross axis */</span>
+  <span class="a">justify-content</span><span class="x">: space-between;</span>
   <span class="a">gap</span><span class="x">: 8px;</span>
 <span class="x">}</span></pre>
-        <p>Default direction is a row. <code>flex-direction: column</code> stacks vertically — this app's phone nav. On a laptop the same links sit in a left rail.</p>
-        <p>You'll use this for an expense row: description on the left, amount on the right.</p>
+        <ul>
+          <li><code>display: flex</code> — this element’s children become a flex row (the default direction is horizontal).</li>
+          <li><code>justify-content</code> — how to spread them along that row. <code>space-between</code> means: first child at the start, last child at the end, space in the middle.</li>
+          <li><code>gap</code> — minimum space between children.</li>
+        </ul>
+        <p>HTML stays simple: a parent with class <code>row</code>, two <code>span</code>s inside. CSS does the lining up. You do not need extra tags for “left” and “right.”</p>
+        <div class="callout word"><strong>New word — flexbox.</strong> <code>display: flex</code> layout. Rows, columns, space-between. The parent is the flex container; the tags inside are flex items.</div>
       `,
       exercise: {
         type: "css",
-        prompt:
-          "Make .row a flex container with space-between so the amount sits on the right.",
-        fixture: '<div class="row"><span>Coffee</span><span>$4.50</span></div>',
+        prompt: "Make .row a flex container with space-between.",
+        fixture: '<div class="row"><span>Ada</span><span>Hi</span></div>',
         starter: ".row {\n\n}",
         checks: [
           {
@@ -158,35 +168,42 @@ window.LEARN_TRACKS.push({
     },
     {
       id: "css-5",
-      title: "Style the expense list",
+      title: "Put a card together",
       words: ["css"],
       body: `
-        <p>Put it together. A usable list is just:</p>
+        <p>You now have the usual pieces of a readable block:</p>
         <ul>
-          <li>a class on each row</li>
-          <li>flex to split name / amount</li>
-          <li>padding so it's tappable</li>
-          <li>a border between rows</li>
+          <li>a <strong>class</strong> on the wrapper so you can select it (<code>.card</code>)</li>
+          <li><strong>flex</strong> + <strong>space-between</strong> so two bits sit on one row</li>
+          <li><strong>padding</strong> so text is not glued to the edge</li>
+          <li>a <strong>border</strong> so you can see the box (here, a line under the row)</li>
         </ul>
-        <p>You don't need a framework. Most of the "look" of this PWA is those four ideas plus a color variable.</p>
+        <p>One rule can list several declarations. Each ends with a semicolon:</p>
+<pre><span class="t">.card</span> <span class="x">{</span>
+  <span class="a">display</span><span class="x">: flex;</span>
+  <span class="a">justify-content</span><span class="x">: space-between;</span>
+  <span class="a">padding</span><span class="x">: 12px;</span>
+  <span class="a">border-bottom</span><span class="x">: 1px solid #ccc;</span>
+<span class="x">}</span></pre>
+        <p><code>border-bottom</code> is only the bottom edge. <code>#ccc</code> is a gray color in hex (three pairs of digits). You do not need to memorize hex; “light gray” as <code>#ccc</code> is enough for now.</p>
+        <p>You do not need a CSS framework for this. Most “cards” in tutorials are these four ideas.</p>
       `,
       exercise: {
         type: "css",
         prompt:
-          "Style .expense as flex, space-between, 12px padding, and a bottom border 1px solid #ccc.",
-        fixture:
-          '<div class="expense"><span>Coffee</span><span>$4.50</span></div><div class="expense"><span>Bus</span><span>$30.00</span></div>',
-        starter: ".expense {\n\n}",
+          "Style .card as flex, space-between, 12px padding, and a bottom border 1px solid #ccc.",
+        fixture: '<div class="card"><span>Ada</span><span>Hi</span></div>',
+        starter: ".card {\n\n}",
         checks: [
-          { sel: ".expense", style: "display", includes: "flex", msg: "flex" },
+          { sel: ".card", style: "display", includes: "flex", msg: "flex" },
           {
-            sel: ".expense",
+            sel: ".card",
             style: "justify-content",
             includes: "space-between",
             msg: "space-between",
           },
           {
-            sel: ".expense",
+            sel: ".card",
             style: "padding-top",
             includes: "12",
             msg: "12px padding",
@@ -196,24 +213,26 @@ window.LEARN_TRACKS.push({
     },
     {
       id: "css-6",
-      title: "Block vs inline (why layout fights you)",
+      title: "Block vs inline (why width seems to fail)",
       words: ["box-model"],
       body: `
-        <p>Two display modes you already used without naming them:</p>
+        <p>Tags come in two everyday display modes. This is why <code>width: 200px</code> on a <code>span</code> often does nothing.</p>
         <table class="plain">
-          <tr><td><strong>Block</strong></td><td><code>h1</code>, <code>p</code>, <code>div</code>, <code>ul</code> — take a full row, honor width/margin</td></tr>
-          <tr><td><strong>Inline</strong></td><td><code>span</code>, <code>a</code>, <code>strong</code> — sit in the sentence, ignore width/height</td></tr>
+          <tr><td><strong>Block</strong></td><td><code>h1</code>, <code>p</code>, <code>div</code>, <code>ul</code> — start on a new line, take the full row, honor width and margin.</td></tr>
+          <tr><td><strong>Inline</strong></td><td><code>span</code>, <code>a</code>, <code>strong</code> — sit in the sentence. Width and height are mostly ignored. They are only as wide as their text.</td></tr>
         </table>
-        <p>That's why <code>width: 200px</code> on a <code>span</code> seems to do nothing. Make it a block, or wrap it in a <code>div</code>, or use flex on the parent (last lesson).</p>
-<pre><span class="t">.price</span> <span class="x">{</span>
-  <span class="a">display</span><span class="x">: inline-block;</span>  <span class="c">/* inline flow, but width works */</span>
+        <p>If you need something that sits in a sentence <em>and</em> has padding/width, use <code>display: inline-block</code>: inline flow, but the box model works.</p>
+<pre><span class="t">.chip</span> <span class="x">{</span>
+  <span class="a">display</span><span class="x">: inline-block;</span>
+  <span class="a">padding</span><span class="x">: 8px;</span>
 <span class="x">}</span></pre>
-        <p>HTML quest built the boxes. This quest painted them. Next quest makes the Add button actually add — still no server.</p>
+        <p>Other fixes: wrap the text in a <code>div</code> (block), or put <code>display: flex</code> on the parent (last lessons).</p>
+        <p>HTML drew the tags. CSS painted them. Next chapter is JavaScript: a click that reads a box and runs <code>if</code>. CSS will not do that for you.</p>
       `,
       exercise: {
         type: "css",
         prompt: "Make .chip display: inline-block with 8px padding.",
-        fixture: '<span class="chip">Food</span>',
+        fixture: '<span class="chip">Hi</span>',
         starter: ".chip {\n\n}",
         checks: [
           {

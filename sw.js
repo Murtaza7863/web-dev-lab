@@ -1,4 +1,4 @@
-const VERSION = "webdev-lab-v8";
+const VERSION = "webdev-lab-v12";
 const ASSETS = [
   "./",
   "./index.html",

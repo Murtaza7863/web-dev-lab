@@ -2,28 +2,25 @@ window.LEARN_TRACKS = window.LEARN_TRACKS || [];
 window.LEARN_TRACKS.push({
   id: "pwa",
   title: "PWA + GitHub Pages",
-  quest: "The Install",
-  blurb: "This app is the lesson. Install it, go offline, know the limits.",
+  quest: "On the internet",
+  blurb:
+    "You already have a page. This is how these files get hosted and optionally installed.",
   youKnow:
-    "If you can install this on a phone home screen or a laptop as its own window, you already used a PWA.",
+    "HTML, CSS, and JS already happened. This chapter is shipping, not tags.",
   lessons: [
     {
       id: "pwa-1",
       title: "What a PWA is",
       words: ["pwa"],
       body: `
-        <p><strong>PWA</strong> = Progressive Web App. A website that can:</p>
-        <ul>
-          <li>Install on a phone (home screen) or a laptop (its own window)</li>
-          <li>Work (partly) offline</li>
-          <li>Skip the browser URL bar once installed</li>
-        </ul>
-        <p>It's still HTML/CSS/JS. Not the App Store. Two extra files do most of the work:</p>
+        <p>You already have a website: HTML, CSS, JavaScript files a browser can load. A <strong>PWA</strong> is still that website, plus two extra files so the browser may treat it like an installable app and keep a cache for offline.</p>
+        <div class="callout word"><strong>New word — PWA.</strong> Progressive Web App: a site that can install and work partly offline. Not a new language. Not Spring. Not iOS Swift.</div>
         <ol>
-          <li><code>manifest.webmanifest</code> — name, icons, theme color</li>
-          <li><code>sw.js</code> — service worker that caches files</li>
+          <li><code>manifest.webmanifest</code> — JSON: name, icons, how to open (full window vs browser tab)</li>
+          <li><code>sw.js</code> — a <strong>service worker</strong> script that can intercept requests and answer from cache</li>
         </ol>
-        <p>You are reading this inside one. Phone: Share / menu → Add to Home Screen. Laptop Chrome/Edge: Install in the address bar. Mac Safari: File → Add to Dock.</p>
+        <p>You are reading this inside one. On a phone: browser menu → Add to Home Screen. On laptop Chrome or Edge: Install in the address bar when the site qualifies.</p>
+        <p>Install does not create a backend. It does not sync localStorage between people. It puts a shortcut on the device and may hide the URL bar. The code is still the same files.</p>
       `,
       exercise: {
         type: "choice",
@@ -37,7 +34,7 @@ window.LEARN_TRACKS.push({
           },
           { id: "c", text: "A Spring Boot feature", ok: false },
         ],
-        why: "PWA is a frontend idea. Spring can serve a PWA, but this one is just static files on Pages.",
+        why: "PWA is a frontend idea. This one is static files.",
       },
     },
     {
@@ -45,21 +42,25 @@ window.LEARN_TRACKS.push({
       title: "Manifest and service worker",
       words: ["service-worker"],
       body: `
-        <p>The manifest (already in this project) is JSON:</p>
+        <p>The manifest is JSON the browser reads to know the app name and how to display it:</p>
 <pre>{
   <span class="a">"name"</span>: <span class="x">"Web Dev Lab"</span>,
   <span class="a">"start_url"</span>: <span class="x">"./"</span>,
-  <span class="a">"display"</span>: <span class="x">"standalone"</span>,
-  <span class="a">"icons"</span>: [{ <span class="a">"src"</span>: <span class="x">"icons/icon-192.png"</span>, <span class="a">"sizes"</span>: <span class="x">"192x192"</span> }]
+  <span class="a">"display"</span>: <span class="x">"standalone"</span>
 }</pre>
-        <p>The service worker intercepts <code>GET</code>s and can reply from cache. That's offline lessons on a plane.</p>
-        <p>It must be HTTPS (GitHub Pages is) or localhost. It cannot cache your Spring server on someone else's machine without extra work.</p>
-        <div class="callout warn">A service worker can serve a stale JS file after you deploy. When you ship a new version, bump the cache name in <code>sw.js</code> (this project uses a version string).</div>
+        <ul>
+          <li><code>name</code> — label under the icon</li>
+          <li><code>start_url</code> — which page to open on launch (<code>./</code> means this folder’s index)</li>
+          <li><code>display: standalone</code> — open like an app: no URL bar. <code>browser</code> would keep the normal tab chrome.</li>
+        </ul>
+        <div class="callout word"><strong>New word — service worker.</strong> A JavaScript file the browser runs in the background, separate from the page. It can cache <code>index.html</code> and lesson files, then serve them when the network is gone. It is not your click handler. It is not Spring.</div>
+        <p>Service workers only register on HTTPS (GitHub Pages is HTTPS) or on <code>localhost</code>. Opening the folder as <code>file://</code> skips them. Use a local static server when developing.</p>
+        <div class="callout warn">A service worker can serve a <em>stale</em> file after you deploy. This project bumps a version string in <code>sw.js</code> when lesson files change. If a lesson looks old, hard-refresh (or unregister the worker in DevTools). That is a cache, not your code being ignored by Git.</div>
       `,
       exercise: {
         type: "text",
         prompt:
-          "In the manifest, which field makes it open like an app without the Safari/Chrome URL bar? Type the field name and value like display: standalone",
+          "Which manifest field makes it open like an app without the URL bar? Type like display: standalone",
         placeholder: "field: value",
         expected: "display: standalone",
         check: (raw) => {
@@ -68,10 +69,7 @@ window.LEARN_TRACKS.push({
             /standalone/.test(s) &&
             (/display/.test(s) || /^\s*standalone\s*$/.test(s));
           return ok
-            ? {
-                ok: true,
-                msg: "display: standalone is the installable-app look.",
-              }
+            ? { ok: true, msg: "display: standalone" }
             : { ok: false, msg: "Expected: display: standalone — or Skip." };
         },
       },
@@ -81,20 +79,18 @@ window.LEARN_TRACKS.push({
       title: "What GitHub Pages can and cannot do",
       words: ["github-pages"],
       body: `
-        <p><strong>Can:</strong> host this whole course + Lab + mock API (the mock is JS). Custom domain. HTTPS. PWAs.</p>
-        <p><strong>Cannot:</strong> run Java, Spring, Python, a database, or keep secrets. No server process.</p>
-        <p>So the split you'll see in real apps:</p>
-        <ul>
-          <li>Frontend (this) → Pages, Netlify, Cloudflare Pages</li>
-          <li>Backend (Spring) → a host that runs a JVM</li>
-        </ul>
-        <p>Your original CLI still matters: it's the rules (add, total, save). Web is those rules behind HTTP plus a UI in the browser.</p>
-        <div class="callout tip">You're done with the keyword tour when you can explain each word on the Words tab using your expense tracker, not a definition you memorized.</div>
+        <p><strong>GitHub Pages</strong> is a host that serves the files in a GitHub repo over HTTPS. You push HTML/CSS/JS (and a manifest, and <code>sw.js</code>). GitHub copies them to a URL like <code>https://you.github.io/web-dev-lab/</code>.</p>
+        <p><strong>Can:</strong> host this course, the Lab’s mock API (because that mock is JavaScript in the page), HTTPS, PWAs.</p>
+        <p><strong>Cannot:</strong> run Java, Spring Boot, or a database. There is no JVM process. There is no always-on program waiting for POST except what the browser fakes.</p>
+        <table class="plain">
+          <tr><td>Frontend (this course)</td><td>Pages is enough</td></tr>
+          <tr><td>Backend (Spring + real notes)</td><td>A host that runs a JVM, plus storage</td></tr>
+        </table>
+        <p>localStorage on a PWA still lives on that phone. Two people installing the same PWA do not share notes. Shared data still needs a backend. Install does not change that.</p>
       `,
       exercise: {
         type: "choice",
-        prompt:
-          "You want a real database that multiple phones share. GitHub Pages alone is…",
+        prompt: "You want a list many phones share. GitHub Pages alone is…",
         options: [
           {
             id: "a",
@@ -103,30 +99,36 @@ window.LEARN_TRACKS.push({
           },
           {
             id: "b",
-            text: "Not enough — you need a backend (e.g. Spring) + a database host",
+            text: "Not enough — you need a backend + a place that stores the list",
             ok: true,
           },
           { id: "c", text: "Enough if the PWA is installed", ok: false },
         ],
-        why: "localStorage is per browser profile. Shared data needs a server. That's the whole point of Spring in this story.",
+        why: "localStorage is per browser. Shared data needs a server.",
       },
     },
     {
       id: "pwa-4",
-      title: "Git is how the files get to Pages",
+      title: "Git is how files get to Pages",
       words: ["git", "github-pages"],
       body: `
-        <p>GitHub Pages does not pull from your laptop by magic. You <strong>commit</strong> files, <strong>push</strong> to GitHub, a workflow copies <code>web/frontend</code> to the public site.</p>
-<pre>git add web/frontend
-git commit -m "lesson: fetch POST"
+        <p>Pages does not watch your laptop. It serves what is in the GitHub repository after a publish step. The usual path:</p>
+<pre>git add .
+git commit -m "lessons"
 git push</pre>
-        <p>That's version control: a timeline of the project, not "save as final-final-2". Branches and PRs are costumes on that timeline. The verb is: snapshot, then publish.</p>
-        <div class="callout java">Your CLI had <code>saveToFile</code> for expenses. Git is <code>saveToFile</code> for source code, with a history.</div>
+        <ul>
+          <li><code>git add</code> — stage files (mark them for the next snapshot)</li>
+          <li><code>git commit</code> — take a snapshot with a message. Local only until you push.</li>
+          <li><code>git push</code> — send commits to GitHub</li>
+        </ul>
+        <div class="callout java">Git is a timeline of source files. commit = snapshot. push = send to GitHub. It is not a compiler. It is not HTTP for your notes API.</div>
+        <p>This repo uses GitHub Actions: after push, a workflow copies the repo (or a folder) to the Pages site. Until that job finishes, the public URL can still show the old files. Until you push, Pages cannot know you edited a lesson in Cursor.</p>
+        <p>If you edited locally and the live site is old: commit, push, wait for the workflow, then hard-refresh because of the service worker cache.</p>
       `,
       exercise: {
         type: "choice",
         prompt:
-          "You edited a lesson locally. GitHub Pages still shows the old one. What's missing?",
+          "You edited a lesson locally. GitHub Pages still shows the old one. What’s missing?",
         options: [
           { id: "a", text: "A Spring Boot restart", ok: false },
           {
@@ -136,44 +138,40 @@ git push</pre>
           },
           { id: "c", text: "localStorage.clear()", ok: false },
         ],
-        why: "Pages serves what's on GitHub, not what's in Cursor. Push is the deploy.",
+        why: "Pages serves what’s on GitHub, not what’s in Cursor.",
       },
     },
     {
       id: "pwa-5",
-      title: "Follow one click through the whole stack",
+      title: "One click through the stack",
       words: ["frontend", "backend", "api"],
       body: `
-        <p>User taps <strong>Add</strong> in a real app. Narrate it. If you can, you learned the pipeline:</p>
+        <p>User taps Add. You now have a name for every layer. Walk the click; do not skip to “the cloud.”</p>
         <ol>
-          <li><strong>HTML</strong> — form fields exist, ids to find them</li>
-          <li><strong>CSS</strong> — the button looks tappable</li>
-          <li><strong>JS event</strong> — click, read values, <code>preventDefault</code></li>
-          <li><strong>fetch POST</strong> — JSON body, <code>Content-Type</code></li>
-          <li><strong>HTTP</strong> — leaves the browser (Network tab)</li>
-          <li><strong>Spring Controller</strong> — <code>@PostMapping</code> + <code>@RequestBody</code></li>
-          <li><strong>Service</strong> — reject amount ≤ 0</li>
-          <li><strong>Repository</strong> — ArrayList or database</li>
-          <li><strong>201 + JSON</strong> back</li>
-          <li><strong>JS</strong> — redraw the list (screen matches memory)</li>
+          <li><strong>HTML</strong> — the boxes exist, with <code>id</code>s, so JS can find them</li>
+          <li><strong>CSS</strong> — the button is visible (display, padding). Paint does not add the note</li>
+          <li><strong>JS click</strong> — read <code>.value</code>, <code>if</code> empty then stop, maybe <code>preventDefault</code></li>
+          <li><strong>fetch POST</strong> — JSON body, <code>/api/notes</code></li>
+          <li><strong>Optional Spring</strong> — Controller maps the URL, Service runs the same <code>if</code>, Repository saves</li>
+          <li><strong>JS again</strong> — read 201 + body, then redraw the list (screen copy)</li>
         </ol>
-        <p>On this PWA, steps 6–8 are the mock API. Same contract. That's the point of an API: swap the actor, keep the lines.</p>
-        <div class="callout tip">If a buzzword isn't in this list, you don't need it to ship the tracker. Add it when a spec forces it (auth, many users, etc.).</div>
+        <p>On this PWA, step 5 is the mock API in the page. Same contract: POST JSON, get an object with <code>id</code>, or 400 on empty title.</p>
+        <p>If the list does not update after 201, the server (or mock) already stored the note. The stale copy is the screen. Rebuild the list. That is the same three-copies bug from the jobs chapter, at the end of the course.</p>
       `,
       exercise: {
         type: "choice",
         prompt:
-          "The list doesn't update after a successful 201. Which state is stale?",
+          "The list doesn’t update after a successful 201. Which copy is stale?",
         options: [
-          { id: "a", text: "The database — 201 is a lie", ok: false },
+          { id: "a", text: "The server — 201 is a lie", ok: false },
           {
             id: "b",
-            text: "The screen. Memory/server has the row; JS didn't re-render.",
+            text: "The screen. JS didn’t re-render.",
             ok: true,
           },
           { id: "c", text: "CSS cache", ok: false },
         ],
-        why: "You named this on The Map: three copies. 201 means store worked. Paint the DOM.",
+        why: "201 means store worked. Paint the list.",
       },
     },
   ],

@@ -98,21 +98,27 @@ const Game = (() => {
     return RANKS[i + 1] || null;
   }
 
+  function progress() {
+    const all = (window.LEARN_TRACKS || []).flatMap((t) => t.lessons || []);
+    const total = all.length;
+    const done = all.filter((l) => Store.isDone(l.id)).length;
+    const pct = total ? Math.round((done / total) * 100) : 0;
+    return { done, total, pct };
+  }
+
   function hud() {
     const s = Store.get();
     const xp = s.xp || 0;
     const r = rankFor(xp);
     const n = nextRank(xp);
-    const lo = r.min;
-    const hi = n ? n.min : lo + 1;
-    const pct = n
-      ? Math.min(100, Math.round(((xp - lo) / (hi - lo)) * 100))
-      : 100;
+    const p = progress();
     return {
       xp,
       rank: r,
       next: n,
-      pct,
+      pct: p.pct,
+      done: p.done,
+      total: p.total,
       combo: s.combo || 0,
       best: s.bestCombo || 0,
     };
@@ -151,10 +157,7 @@ const Game = (() => {
       }
       return s;
     });
-    if (fresh) {
-      addXp(XP.badge);
-      toast("Badge: " + spec.name, "loot");
-    }
+    if (fresh) addXp(XP.badge);
     return fresh;
   }
 
@@ -192,7 +195,6 @@ const Game = (() => {
     Store.complete(lessonId, wordIds);
     bumpCombo(false);
     syncBadges();
-    if (first) toast("Skipped the checker — step still cleared", "loot");
     return { first, xp: 0, combo: 0, skipped: true };
   }
 
@@ -203,8 +205,6 @@ const Game = (() => {
     let xp = 0;
     if (first) xp = addXp(XP.lesson);
     syncBadges();
-    if (first && xp) toast("+" + xp + " XP · quest step", "xp");
-    if (combo >= 3) toast("Combo x" + combo, "combo");
     return { first, xp, combo };
   }
 
@@ -213,15 +213,12 @@ const Game = (() => {
       bumpCombo(false);
       return 0;
     }
-    const combo = bumpCombo(true);
-    if (combo >= 3) toast("Combo x" + combo, "combo");
-    return combo;
+    return bumpCombo(true);
   }
 
   function checkDone(alreadyHad) {
     const xp = addXp(alreadyHad ? XP.checkRetake : XP.check);
     syncBadges();
-    toast("+" + xp + " XP · placement", "xp");
     return xp;
   }
 
@@ -232,10 +229,7 @@ const Game = (() => {
       s.labPosts = (s.labPosts || 0) + 1;
       return s;
     });
-    if (first) {
-      addXp(XP.lab);
-      toast("+" + XP.lab + " XP · you touched the dungeon", "xp");
-    }
+    if (first) addXp(XP.lab);
     syncBadges();
   }
 
@@ -245,6 +239,7 @@ const Game = (() => {
     BADGES,
     toast,
     hud,
+    progress,
     rankFor,
     lessonWin,
     lessonSkip,

@@ -2,21 +2,35 @@ window.SKILL_CHECK = [
   {
     track: "start",
     type: "choice",
-    prompt: "This course is being shown by…",
+    prompt: "new Person() with fields name and age is…",
     options: [
-      { id: "a", text: "The Java terminal", ok: false },
-      { id: "b", text: "A browser (Chrome, Safari, Edge…)", ok: true },
-      { id: "c", text: "Spring Boot", ok: false },
+      { id: "a", text: "HTML", ok: false },
+      { id: "b", text: "An object: a bundle of fields", ok: true },
+      { id: "c", text: "A browser", ok: false },
     ],
   },
   {
     track: "start",
     type: "choice",
-    prompt: "To put words on a website, the smallest true answer is…",
+    prompt: "sc.next() in Java is…",
     options: [
-      { id: "a", text: "A database", ok: false },
-      { id: "b", text: "A text file the browser can read (HTML)", ok: true },
-      { id: "c", text: "Docker", ok: false },
+      { id: "a", text: "Paint (CSS)", ok: false },
+      { id: "b", text: "Input — forcing the user to type", ok: true },
+      { id: "c", text: "A tag", ok: false },
+    ],
+  },
+  {
+    track: "start",
+    type: "choice",
+    prompt: "Have you written HTML yet at the start of this course?",
+    options: [
+      { id: "a", text: "Yes — Java is HTML", ok: false },
+      {
+        id: "b",
+        text: "No. HTML starts with the first tag lesson.",
+        ok: true,
+      },
+      { id: "c", text: "Only if you used Spring", ok: false },
     ],
   },
   {
@@ -28,26 +42,6 @@ window.SKILL_CHECK = [
     checks: [{ sel: "p", text: "Hello", msg: "Need <p>Hello</p>" }],
   },
   {
-    track: "html",
-    type: "choice",
-    prompt: "Which one means “end of paragraph”?",
-    options: [
-      { id: "a", text: "<p>", ok: false },
-      { id: "b", text: "</p>", ok: true },
-      { id: "c", text: "<p/>", ok: false },
-    ],
-  },
-  {
-    track: "css",
-    type: "css",
-    prompt: "Make all h1 elements red. (color: red is fine.)",
-    fixture: "<h1>Title</h1>",
-    starter: "h1 {\n  \n}",
-    checks: [
-      { sel: "h1", style: "color", includes: "red", msg: "h1 { color: red; }" },
-    ],
-  },
-  {
     track: "js",
     type: "choice",
     prompt: "Java and JavaScript are…",
@@ -55,7 +49,7 @@ window.SKILL_CHECK = [
       { id: "a", text: "The same language with two names", ok: false },
       {
         id: "b",
-        text: "Different languages. The similar name is an accident.",
+        text: "Different languages. Same ideas: objects, input, if.",
         ok: true,
       },
       { id: "c", text: "Both required to show a paragraph", ok: false },
@@ -64,24 +58,30 @@ window.SKILL_CHECK = [
   {
     track: "js",
     type: "js",
-    prompt: "Write function add(a, b) that returns the sum.",
-    starter: "function add(a, b) {\n  \n}",
-    tests: [{ expr: "add(2, 3)", eq: 5, msg: "add(2,3) === 5" }],
+    prompt: 'Write isEmpty(s) that returns true only for "".',
+    starter: "function isEmpty(s) {\n  \n}",
+    tests: [
+      {
+        expr: 'isEmpty("") === true && isEmpty("Ada") === false',
+        eq: true,
+        msg: 'true only for ""',
+      },
+    ],
   },
 ];
 
 window.LEARN_WORDS = {
   spec: {
     term: "Spec",
-    def: "A short list of what a human can do. Not a framework. 'User can add an expense with description, amount, category.'",
+    def: "A short list of what a human can do. Not a framework. 'User can add a note with a title and text.'",
   },
   "data-model": {
     term: "Data model",
-    def: "The noun you store. Expense: description, amount, category, later an id. Class / JSON / DB row are costumes.",
+    def: "The noun you store. Example: Note with title and text, later an id. Class / JSON / DB row are the same noun.",
   },
   "separation-of-concerns": {
     term: "Separation of concerns",
-    def: "Don't mix UI, rules, and storage. Scanner vs totals vs the file. Spring says Controller / Service / Repository.",
+    def: "Don't mix UI, rules, and storage. Boxes vs if vs localStorage. Spring says Controller / Service / Repository.",
   },
   state: {
     term: "State",
@@ -89,11 +89,11 @@ window.LEARN_WORDS = {
   },
   validation: {
     term: "Validation",
-    def: "Reject junk before it becomes state. amount > 0. That's 400, not 500.",
+    def: 'Reject junk before you store it. if (name === "") return. Same idea in Java and JavaScript.',
   },
   "edge-case": {
     term: "Edge case",
-    def: "Boring situation you forgot: empty list, duplicate names, negative amounts.",
+    def: "Boring situation you forgot: empty list, two notes with the same title, a missing id.",
   },
   "vertical-slice": {
     term: "Vertical slice",
@@ -129,11 +129,11 @@ window.LEARN_WORDS = {
   },
   css: {
     term: "CSS",
-    def: "Paint rules. HTML is the words. CSS is color, size, spacing.",
+    def: "Paint. HTML is the words. CSS is color, size, spacing. Cannot run if.",
   },
   selector: {
     term: "Selector",
-    def: "Which elements a CSS rule hits: h1, .item, #total.",
+    def: "Which elements a CSS rule hits: h1, .card, #hello.",
   },
   "box-model": {
     term: "Box model",
@@ -141,23 +141,23 @@ window.LEARN_WORDS = {
   },
   flexbox: {
     term: "Flexbox",
-    def: "display:flex layout. Rows, columns, space-between. Expense row: name | amount.",
+    def: "display:flex layout. Rows, columns, space-between.",
   },
   javascript: {
     term: "JavaScript",
-    def: "A different language the browser runs. Not Java. The similar name is an accident.",
+    def: "A different language the browser runs. Not Java. Same ideas: objects, reading input, if.",
   },
   dom: {
     term: "DOM",
-    def: "The live HTML tree JS can read and edit. getElementById, createElement.",
+    def: "The live page as objects JS can find. getElementById is “give me that box,” like using a variable name.",
   },
   event: {
     term: "Event",
-    def: "Click, submit, input. Browser's replacement for a Scanner loop.",
+    def: "Click, submit, input. How the browser waits, instead of a Scanner loop.",
   },
   localStorage: {
     term: "localStorage",
-    def: "Per-origin key/value strings in the browser. Your saveToFile for a static site.",
+    def: "Per-origin key/value strings in the browser. Survives refresh on this device. Not a shared server.",
   },
   http: {
     term: "HTTP",
@@ -181,7 +181,7 @@ window.LEARN_WORDS = {
   },
   rest: {
     term: "REST",
-    def: "Convention: URL is the noun, HTTP method is the verb. GET /api/expenses.",
+    def: "Convention: URL is the noun, HTTP method is the verb. GET /api/notes.",
   },
   fetch: {
     term: "fetch",
@@ -189,12 +189,12 @@ window.LEARN_WORDS = {
   },
   crud: {
     term: "CRUD",
-    def: "Create Read Update Delete. Your CLI menu. Every database app.",
+    def: "Create Read Update Delete. Add, list, change, remove.",
   },
-  get: { term: "GET", def: "Read. No body. Listing expenses." },
-  post: { term: "POST", def: "Create. Body is the new expense." },
+  get: { term: "GET", def: "Read. No body. Listing notes." },
+  post: { term: "POST", def: "Create. Body is the new note." },
   put: { term: "PUT", def: "Replace/update a thing at that URL." },
-  delete: { term: "DELETE", def: "Remove. Your CLI option 2." },
+  delete: { term: "DELETE", def: "Remove a row by id." },
   "status-code": {
     term: "Status code",
     def: "200 ok, 201 created, 204 empty ok, 400 bad input, 404 missing, 500 server bug.",
@@ -205,15 +205,15 @@ window.LEARN_WORDS = {
   },
   controller: {
     term: "Controller",
-    def: "Java class that is the HTTP menu. Main.java with annotations.",
+    def: "Java class that is the HTTP menu. if (choice == 1) becomes a mapped method.",
   },
   service: {
     term: "Service",
-    def: "Business rules. ExpenseTracker methods, without HTTP or storage details.",
+    def: "Business rules. ifs, without HTTP or storage details.",
   },
   repository: {
     term: "Repository",
-    def: "Save and load. ArrayList, file, or database. Your saveToFile.",
+    def: "Save and load. ArrayList, file, or database.",
   },
   requestbody: {
     term: "@RequestBody",
@@ -221,7 +221,7 @@ window.LEARN_WORDS = {
   },
   pathvariable: {
     term: "@PathVariable",
-    def: "Spring: the {id} in /expenses/{id} → method argument.",
+    def: "Spring: the {id} in /notes/{id} → method argument.",
   },
   cors: {
     term: "CORS",
@@ -261,6 +261,6 @@ window.LEARN_WORDS = {
   },
   database: {
     term: "Database",
-    def: "A fancier saveToFile that many clients share. Same verbs as a repository.",
+    def: "Storage many clients can share. Same verbs as a repository: save, find, delete.",
   },
 };
