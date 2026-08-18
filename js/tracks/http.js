@@ -23,7 +23,7 @@ window.LEARN_TRACKS.push({
         <div class="callout word"><strong>New word — HTTP.</strong> The envelope those messages use: a question (request) and an answer (response). You do not need the full spec. “A request and a reply” is enough.</div>
         <div class="callout word"><strong>New word — request.</strong> What the client sends: “please list the notes” or “please save this note.”</div>
         <div class="callout word"><strong>New word — response.</strong> What the server sends back: a yes/no number plus optional data (the list, the saved note, an error).</div>
-        <p>Your browser loading this lesson is already a client. The files came from a server (GitHub Pages). Next we will send our own requests for notes, not just for HTML files.</p>
+        <p>You have already used HTTP without naming it: this lesson file was a GET of HTML from GitHub Pages. Next we send our own requests for <em>notes</em> — a different path, often a different program, same envelope.</p>
       `,
       exercise: {
         type: "choice",
@@ -132,7 +132,7 @@ window.LEARN_TRACKS.push({
       body: `
         <p><code>fetch</code> is the JavaScript function that sends HTTP. You already met <code>async</code> / <code>await</code> so this function can wait without freezing the page.</p>
         <div class="callout word"><strong>New word — fetch.</strong> Built into the browser. You pass a URL. It returns a response. Default method is GET (read).</div>
-        <div class="callout word"><strong>New word — API.</strong> Application Programming Interface: the set of URLs + methods the server promises. “The notes API” means paths like <code>/api/notes</code>, not a special language.</div>
+        <div class="callout word"><strong>New word — API.</strong> Application Programming Interface: the set of URLs + methods the server promises. “The notes API” means paths like <code>/api/notes</code>, not a special language. A later lesson is the full menu.</div>
 <pre><span class="t">const</span> res = <span class="t">await</span> fetch(<span class="x">"/api/notes"</span>);
 <span class="t">const</span> data = <span class="t">await</span> res.json();</pre>
         <ul>
@@ -240,7 +240,11 @@ window.LEARN_TRACKS.push({
             text: "The request body — 400 means this side sent junk",
             ok: true,
           },
-          { id: "c", text: "CSS", ok: false },
+          {
+            id: "c",
+            text: "The path — 400 always means the id is missing (that is 404)",
+            ok: false,
+          },
         ],
         why: "400 = validation. You already wrote that as if.",
       },
@@ -254,13 +258,13 @@ window.LEARN_TRACKS.push({
 <pre>https://notes.example.com/api/notes/3?limit=10</pre>
         <table class="plain">
           <tr><td><code>https</code></td><td><strong>Scheme.</strong> How to talk. <code>https</code> is HTTP inside encryption. Browsers warn on plain <code>http</code> except localhost.</td></tr>
-          <tr><td><code>notes.example.com</code></td><td><strong>Host.</strong> Which computer. Together with the scheme (and port if any) this is the origin you met in CORS later.</td></tr>
-          <tr><td><code>/api/notes/3</code></td><td><strong>Path.</strong> Which thing on that computer. The <code>3</code> is still the id.</td></tr>
+          <tr><td><code>notes.example.com</code></td><td><strong>Host.</strong> Which computer. Port is optional (<code>:8080</code>). Scheme + host + port is the <em>web</em> origin — not Git’s <code>origin</code> (that was a nickname for GitHub).</td></tr>
+          <tr><td><code>/api/notes/3</code></td><td><strong>Path.</strong> Which thing on that computer. The <code>3</code> is the id, in the path, not after <code>?</code>.</td></tr>
           <tr><td><code>?limit=10</code></td><td><strong>Query string.</strong> Extra filters after <code>?</code>. <code>name=value</code>, more pairs joined with <code>&amp;</code>. Not a new verb. GET with a query is still GET.</td></tr>
         </table>
         <div class="callout word"><strong>New word — URL.</strong> Uniform Resource Locator: the full address. Path is one piece. The verb (GET/POST) is <em>not</em> in the URL. It travels beside it.</div>
         <div class="callout word"><strong>New word — query.</strong> The <code>?a=1&amp;b=2</code> tail. Optional. Use it for “list, but only 10” or “search,” not for “please delete” (that is DELETE + path).</div>
-        <p><code>fetch("/api/notes")</code> is a <em>relative</em> URL: same host as this page. <code>fetch("https://other.com/api/notes")</code> is another origin. That is when CORS appears (Spring chapter).</p>
+        <p><code>fetch("/api/notes")</code> is a <em>relative</em> URL: same host as this page. <code>fetch("https://other.com/api/notes")</code> is another web origin. CORS (Spring chapter) is the browser rule for that case. You do not need it for this Lab.</p>
       `,
       exercise: {
         type: "choice",
@@ -272,7 +276,11 @@ window.LEARN_TRACKS.push({
             text: "A query string: extra filters. The method is still GET",
             ok: true,
           },
-          { id: "c", text: "CSS", ok: false },
+          {
+            id: "c",
+            text: "The note id (that would be /3 in the path)",
+            ok: false,
+          },
         ],
         why: "Verb stays GET. Query is optional data on the URL.",
       },
@@ -293,7 +301,7 @@ window.LEARN_TRACKS.push({
             <tr><td><code>DELETE /api/notes/:id</code></td><td>204 or 404</td></tr>
           </table>
         </div>
-        <p>That table <em>is</em> the API. JSON shapes are part of the promise: the page sends <code>title</code>, not <code>heading</code>, because the server’s <code>Note</code> uses <code>title</code>.</p>
+        <p>That table <em>is</em> the API. <code>:id</code> is a placeholder in the docs: a real request uses <code>/api/notes/3</code>, not the letters <code>:id</code>. JSON shapes are part of the promise: the page sends <code>title</code>, not <code>heading</code>, because the server’s <code>Note</code> uses <code>title</code>.</p>
         <p>Real products publish this as docs (or OpenAPI). You still read it as: verb, path, body in, status + body out. You already debug with those five parts.</p>
         <p>This site’s Lab is a fake kitchen that honors the same menu, in the browser, so you can practice without Spring running.</p>
       `,
@@ -327,6 +335,7 @@ window.LEARN_TRACKS.push({
           <tr><td><code>401</code></td><td>Who are you? The server expected a login (or a token) and you sent none, or a bad one.</td></tr>
           <tr><td><code>403</code></td><td>The server knows who you are, and you are not allowed to do this verb on this note.</td></tr>
         </table>
+        <p>Example: nobody logged in, GET the private list → often <code>401</code>. You logged in as Bob, DELETE Ada’s note → often <code>403</code>. Wrong id that does not exist → still <code>404</code>, even if you are logged in.</p>
         <p>Often the page sends a <strong>header</strong> such as <code>Authorization: Bearer …</code> — a string the server checks, the same idea as a password, but for programs. You put it in a header, not in the query string, so it is less likely to land in logs and screenshots.</p>
         <p>This Lab does not require login. A real notes app would. You do not need to build auth in this course. You need to <em>read</em> 401 vs 403 instead of rewriting fetch at random.</p>
         <div class="callout warn">If a lesson or a person asks you to steal someone else’s token, stop. That is not this course. Your own token is a secret, like a password.</div>
@@ -384,7 +393,7 @@ window.LEARN_TRACKS.push({
             text: "POST ran twice. Create is not safe to repeat like GET",
             ok: true,
           },
-          { id: "c", text: "CSS flexbox duplicated the card", ok: false },
+          { id: "c", text: "localStorage duplicated it on refresh", ok: false },
         ],
         why: "GET read. POST create. Retries of POST can duplicate. Disable the button.",
       },

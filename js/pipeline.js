@@ -43,7 +43,7 @@ window.PIPELINE = [
     quest: "The jobs",
     layer: "Jobs",
     because:
-      "You can now draw a page and handle a click. An app is still: input, rules, remember, show.",
+      "You can draw a page, handle a click, and read a commit. An app is still: input, rules, remember, show.",
     next: "HTTP: a method call becomes a message.",
   },
   {

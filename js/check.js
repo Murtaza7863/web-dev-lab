@@ -60,12 +60,37 @@ window.SKILL_CHECK = [
     type: "js",
     prompt: 'Write isEmpty(s) that returns true only for "".',
     starter: "function isEmpty(s) {\n  \n}",
+    expected: 'function isEmpty(s) {\n  return s === "";\n}',
     tests: [
       {
         expr: 'isEmpty("") === true && isEmpty("Ada") === false',
         eq: true,
         msg: 'true only for ""',
       },
+    ],
+  },
+  {
+    track: "git",
+    type: "choice",
+    prompt: "Git vs GitHub:",
+    options: [
+      { id: "a", text: "They are the same program", ok: false },
+      {
+        id: "b",
+        text: "Git is the timeline on your computer. GitHub hosts a copy.",
+        ok: true,
+      },
+      { id: "c", text: "GitHub is the language the browser runs", ok: false },
+    ],
+  },
+  {
+    track: "http",
+    type: "choice",
+    prompt: "GET /api/notes/99 and nothing has that id. Typical status?",
+    options: [
+      { id: "a", text: "200", ok: false },
+      { id: "b", text: "401", ok: false },
+      { id: "c", text: "404", ok: true },
     ],
   },
 ];

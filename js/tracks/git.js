@@ -61,15 +61,12 @@ git commit -m "red headings"</pre>
         prompt:
           "Type the two commands in order: git add then git commit (a message is optional here).",
         placeholder: "git add …",
-        expected: "git add . ; git commit",
+        expected: 'git add .\ngit commit -m "red headings"',
         check: (raw) => {
           const s = raw.toLowerCase();
-          const add = /git\s+add/.test(s);
-          const commit = /git\s+commit/.test(s);
-          const order =
-            s.indexOf("git add") >= 0 &&
-            s.indexOf("git commit") > s.indexOf("git add");
-          if (add && commit && order) {
+          const addAt = s.search(/git\s+add\b/);
+          const commitAt = s.search(/git\s+commit\b/);
+          if (addAt >= 0 && commitAt > addAt) {
             return {
               ok: true,
               msg: "Add first (pick files), then commit (snapshot).",
@@ -93,7 +90,7 @@ git commit -m "red headings"</pre>
         <p>That is why “I edited it in Cursor” does not update the public course. Cursor is your laptop. Pages reads GitHub. An agent that “pushed to origin/main” sent snapshots to GitHub’s <code>main</code> branch.</p>
 <pre>git push</pre>
         <p><code>git pull</code> is the other direction: download commits that are on GitHub but not on this laptop yet. Two people (or you + an agent on another machine) stay in sync that way.</p>
-        <p>GitHub is not HTTP for your notes API. It is file history. Different job from <code>POST /api/notes</code>.</p>
+        <p>GitHub stores <em>source files</em> (this course’s HTML and JavaScript). It is not the notes list you type in the Lab. Those are different piles of data.</p>
       `,
       exercise: {
         type: "text",
@@ -142,7 +139,7 @@ git commit -m "red headings"</pre>
         <p>The default line of snapshots is usually called <code>main</code> (older repos: <code>master</code>). A <strong>branch</strong> is another line with a name, starting from some commit. You can commit on the branch without moving <code>main</code> yet.</p>
         <div class="callout word"><strong>New word — branch.</strong> A named line of commits. <code>main</code> is the one you treat as “the real course.” Feature work often lives on another name first.</div>
         <p>A <strong>pull request</strong> (PR) on GitHub is a webpage that says: “please copy these commits from my branch onto <code>main</code> after a human looks.” It is not a Git command you must memorize. It is a review step.</p>
-        <div class="callout word"><strong>New word — pull request.</strong> A GitHub request to merge a branch into another (usually main). Agents open PRs so you can read the diff before it becomes the default.</div>
+        <div class="callout word"><strong>New word — pull request.</strong> A GitHub request to merge a branch into another (usually main). Agents open PRs so you can read the diff before it becomes the default. The word “pull” here is historical. It is <em>not</em> <code>git pull</code>.</div>
         <p>You asked this course’s agent to push to <code>main</code> sometimes. That skips the PR. Fine for a personal repo. Teams use PRs so nobody’s agent overwrites the live site unseen.</p>
         <p>You do not need rebase, cherry-pick, or force-push. If an agent wants <code>push --force</code> to <code>main</code>, say no unless you fully understand you are rewriting the public timeline.</p>
       `,
@@ -178,7 +175,7 @@ git commit -m "red headings"</pre>
         </table>
         <p>If the agent committed: there is a new log line. If it pushed: GitHub shows that commit. If Pages is still old: the workflow may still be running, or your browser cached a service worker — hard-refresh. That is not Git failing.</p>
         <p>Progress in <em>this</em> course (which lessons you finished) is <code>localStorage</code> in your browser. It is not a Git commit. Updating the course files does not reset that, as long as lesson ids stay the same.</p>
-        <p>Next part of the course is still about programs talking (HTTP), not more Git. You have enough to read an agent’s Git sentences.</p>
+        <p>Next we name the jobs (input, rules, remember, show). Then HTTP: a message instead of a method call. You have enough Git to read an agent’s sentences. We will not restart this chapter.</p>
       `,
       exercise: {
         type: "choice",

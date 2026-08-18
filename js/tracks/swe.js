@@ -6,7 +6,7 @@ window.LEARN_TRACKS.push({
   blurb:
     "You already made a page and a click. This only names the jobs: take input, apply rules, remember, show.",
   youKnow:
-    "HTML, CSS, and JavaScript already happened. This chapter does not teach tags again. It names what you just built.",
+    "HTML, CSS, JavaScript, and Git already happened. This chapter does not teach tags or commits again. It names what you just built.",
   lessons: [
     {
       id: "swe-1",
