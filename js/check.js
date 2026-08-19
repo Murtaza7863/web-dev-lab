@@ -84,6 +84,20 @@ window.SKILL_CHECK = [
     ],
   },
   {
+    track: "git",
+    type: "choice",
+    prompt: "On a shared repo, new work should…",
+    options: [
+      { id: "a", text: "Commit straight on main, then force-push", ok: false },
+      {
+        id: "b",
+        text: "Land through a branch + pull request after a human reads the diff",
+        ok: true,
+      },
+      { id: "c", text: "Be emailed as a zip so Git stays clean", ok: false },
+    ],
+  },
+  {
     track: "http",
     type: "choice",
     prompt: "GET /api/notes/99 and nothing has that id. Typical status?",
@@ -302,11 +316,23 @@ window.LEARN_WORDS = {
   },
   branch: {
     term: "branch",
-    def: "A named line of commits. main is the default. Other names let you commit without moving main yet.",
+    def: "A named line of commits. main is the default shared line. Feature work lives on another name first.",
   },
   "pull-request": {
     term: "Pull request",
-    def: "A GitHub request to merge a branch into another (usually main) after a human looks. Not the same as git pull.",
+    def: "A GitHub request to merge a branch into main after a human looks. Not the same as git pull.",
+  },
+  merge: {
+    term: "merge",
+    def: "Combine one branch into another. After a PR merge, GitHub’s main has the work. Pull to update your laptop.",
+  },
+  conflict: {
+    term: "conflict",
+    def: "Two branches changed the same lines. Git stops and marks both versions. A human keeps the right text. Do not force-push main to hide it.",
+  },
+  review: {
+    term: "review",
+    def: "A human reads the PR diff before merge. Agents do not replace that look. git pull is not a review.",
   },
   url: {
     term: "URL",

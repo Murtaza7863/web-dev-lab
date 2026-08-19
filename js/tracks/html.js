@@ -344,7 +344,7 @@ window.LEARN_TRACKS.push({
           <li><code>src</code> — path to the JavaScript file</li>
           <li>Put it at the <em>bottom of <code>body</code></em> so the HTML boxes exist first. If the script runs too early and asks for <code>id="name"</code>, the box is not there yet and you get nothing.</li>
         </ul>
-        <p>Next chapter you will write CSS in the exercise box (this site injects it for you). Then JavaScript: click, read the box, <code>if</code>.</p>
+        <p>You can attach CSS and JS. One more page: put the pieces you already know on one screen, without a new tag. Then CSS.</p>
       `,
       exercise: {
         type: "html",
@@ -361,6 +361,50 @@ window.LEARN_TRACKS.push({
           },
           { sel: "script[src]", msg: 'Need <script src="...">' },
           { sel: "h1", msg: "Still need visible content — an h1" },
+        ],
+      },
+    },
+    {
+      id: "html-10",
+      title: "Put a small notes page together",
+      words: ["html", "element", "attribute"],
+      body: `
+        <p>The last HTML drills were one idea each: a list, a form, an id. A real file is several of those in one <code>body</code>. That is the skill — not remembering the word <code>ul</code> in isolation.</p>
+        <p>Build a tiny notes screen from English, using only tags you already have:</p>
+        <ul>
+          <li>A page heading <code>h1</code>: Notes</li>
+          <li>A bulleted list of two existing notes: Apples, Bread</li>
+          <li>A form with a text box (placeholder Title) and a button that says Add, <code>type="button"</code> so it does not reload</li>
+        </ul>
+        <p>No CSS. No JavaScript. The button will not save anything yet. You are still only drawing the boxes. If the outline is wrong, paint and clicks have nothing to hang on.</p>
+        <p>Next chapter is CSS: paint this kind of page. Then JavaScript: make Add actually append a row.</p>
+      `,
+      exercise: {
+        type: "html",
+        prompt:
+          "A small notes page: h1 Notes, a ul with Apples and Bread, a form with a text input placeholder Title and a button Add (type button).",
+        starter: "",
+        expected:
+          '<h1>Notes</h1>\n<ul>\n  <li>Apples</li>\n  <li>Bread</li>\n</ul>\n<form>\n  <input type="text" placeholder="Title">\n  <button type="button">Add</button>\n</form>',
+        checks: [
+          { sel: "h1", text: "Notes", msg: "Need <h1>Notes</h1>" },
+          { sel: "ul li", count: 2, msg: "Two <li>s inside a <ul>" },
+          { sel: "ul", text: "Apples", msg: "List should include Apples" },
+          { sel: "ul", text: "Bread", msg: "List should include Bread" },
+          { sel: "form", msg: "Wrap the controls in <form>" },
+          {
+            sel: 'input[type="text"]',
+            msg: "Need a text input",
+          },
+          {
+            sel: 'input[placeholder="Title"]',
+            msg: "Input placeholder should be Title",
+          },
+          { sel: "button", text: "Add", msg: "Need a button that says Add" },
+          {
+            sel: 'button[type="button"]',
+            msg: 'Button needs type="button" so the form does not reload',
+          },
         ],
       },
     },

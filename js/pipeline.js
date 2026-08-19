@@ -28,14 +28,14 @@ window.PIPELINE = [
     layer: "Click",
     because:
       "A second language. Same ideas you know: objects, input, if. Different syntax, runs in the browser.",
-    next: "Git: snapshot these files. Then name the jobs, then HTTP.",
+    next: "Git: how a team shares these files (branch, PR, review) — not just git push.",
   },
   {
     id: "git",
     quest: "Git and GitHub",
     layer: "Save",
     because:
-      "A timeline of files on your computer, then GitHub as a host. Enough to read what an agent committed and pushed.",
+      "A timeline, then the team loop: update main, branch, commit, push the branch, PR, review, merge, pull. Not “git push” as the whole job.",
     next: "Name the jobs you built. Then two programs talk.",
   },
   {

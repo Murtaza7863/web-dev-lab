@@ -304,7 +304,7 @@
       `
       <span class="badge">From zero HTML</span>
       <h1>A page, then Git, then HTTP.</h1>
-      <p>Part 1 is a page (tags, paint, click). Part 2 is Git — enough to understand a commit and a push. Part 3 is HTTP and APIs. Skip exists if a checker nags.</p>
+      <p>Part 1 is a page (tags, paint, click) — later lessons in each chapter make you combine them. Part 2 is Git as a team loop: branch, PR, review, merge. Part 3 is HTTP and APIs. Skip exists if a checker nags.</p>
       ${pipelineStrip(nextQuest() ? nextQuest().track.id : "pwa")}
       ${questPathHtml()}
     `,
@@ -516,7 +516,12 @@
       }
       if (c.style) {
         const val = computedStyle(el, c.style);
-        if (!styleMatches(val, c.includes)) return { ok: false, msg: c.msg };
+        if (c.includes != null && !styleMatches(val, c.includes)) {
+          return { ok: false, msg: c.msg };
+        }
+        if (c.excludes != null && styleMatches(val, c.excludes)) {
+          return { ok: false, msg: c.msg };
+        }
       }
     }
     return { ok: true, msg: "Looks right." };

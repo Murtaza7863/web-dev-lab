@@ -51,7 +51,7 @@ const Game = (() => {
     { id: "hands", name: "Live hands", hint: "Clear JavaScript" },
     {
       id: "git_hands",
-      name: "Can read a commit",
+      name: "Can follow a PR",
       hint: "Clear Git and GitHub",
     },
     { id: "operator", name: "Operator", hint: "Clear HTTP / APIs" },

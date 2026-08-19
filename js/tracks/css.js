@@ -215,6 +215,12 @@ window.LEARN_TRACKS.push({
             includes: "12",
             msg: "12px padding",
           },
+          {
+            sel: ".card",
+            style: "border-bottom-width",
+            includes: "1",
+            msg: "1px bottom border",
+          },
         ],
       },
     },
@@ -234,7 +240,7 @@ window.LEARN_TRACKS.push({
   <span class="a">padding</span><span class="x">: 8px;</span>
 <span class="x">}</span></pre>
         <p>Other fixes: wrap the text in a <code>div</code> (block), or put <code>display: flex</code> on the parent (last lessons).</p>
-        <p>HTML drew the tags. CSS painted them. Next chapter is JavaScript: a click that reads a box and runs <code>if</code>. CSS will not do that for you.</p>
+        <p>You now have the paints. Next three lessons are not new properties for a quiz — they are using several rules together, and fixing a broken file, the way a real page works.</p>
       `,
       exercise: {
         type: "css",
@@ -254,6 +260,172 @@ window.LEARN_TRACKS.push({
             style: "padding-top",
             includes: "8",
             msg: "8px padding",
+          },
+        ],
+      },
+    },
+    {
+      id: "css-7",
+      title: "Paint a small notes list",
+      words: ["css", "flexbox", "selector"],
+      body: `
+        <p>Isolated properties are not a page. A notes list is several rules that have to work <em>together</em>. The HTML is already there (you would have written it last chapter). Your job is the look.</p>
+        <p>New spelling, same idea as the row: <code>flex-direction: column</code> stacks children vertically. <code>gap</code> is the space <em>between</em> those children (like margin, but on the parent).</p>
+<pre><span class="t">.list</span> <span class="x">{</span>
+  <span class="a">display</span><span class="x">: flex;</span>
+  <span class="a">flex-direction</span><span class="x">: column;</span>
+  <span class="a">gap</span><span class="x">: 12px;</span>
+<span class="x">}</span></pre>
+        <p>A class on the title vs the meta: <code>.title</code> and <code>.meta</code>. If you write <code>span { color: navy }</code> you paint <em>every</em> span, including the title. That is the usual bug when you “just make it blue.”</p>
+        <p>Read the preview. If the two cards are glued together, you forgot <code>gap</code> (or margin). If the title is navy too, your selector was too wide.</p>
+      `,
+      exercise: {
+        type: "css",
+        prompt:
+          "Notes list: .list is a vertical flex column with 12px gap. Each .card has 16px padding and a 1px solid #ccc border. .title is bold. .meta is navy — not every span.",
+        fixture:
+          '<div class="list"><div class="card"><div class="row"><span class="title">Ada</span><span class="meta">now</span></div><p class="body">First note</p></div><div class="card"><div class="row"><span class="title">Hi</span><span class="meta">later</span></div><p class="body">Second</p></div></div>',
+        starter: ".list {\n\n}\n.card {\n\n}\n.title {\n\n}\n.meta {\n\n}\n",
+        expected:
+          ".list {\n  display: flex;\n  flex-direction: column;\n  gap: 12px;\n}\n.card {\n  padding: 16px;\n  border: 1px solid #ccc;\n}\n.title {\n  font-weight: bold;\n}\n.meta {\n  color: navy;\n}",
+        checks: [
+          {
+            sel: ".list",
+            style: "display",
+            includes: "flex",
+            msg: ".list should be display: flex",
+          },
+          {
+            sel: ".list",
+            style: "flex-direction",
+            includes: "column",
+            msg: "flex-direction: column (stack the cards)",
+          },
+          {
+            sel: ".list",
+            style: "row-gap",
+            includes: "12",
+            msg: "12px gap between cards",
+          },
+          {
+            sel: ".card",
+            style: "padding-top",
+            includes: "16",
+            msg: "card padding 16px",
+          },
+          {
+            sel: ".card",
+            style: "border-top-width",
+            includes: "1",
+            msg: "1px card border",
+          },
+          {
+            sel: ".title",
+            style: "font-weight",
+            includes: "bold",
+            msg: ".title bold",
+          },
+          {
+            sel: ".meta",
+            style: "color",
+            includes: "navy",
+            msg: ".meta navy",
+          },
+          {
+            sel: ".title",
+            style: "color",
+            excludes: "navy",
+            msg: "Do not paint .title navy — that means you colored every span",
+          },
+        ],
+      },
+    },
+    {
+      id: "css-8",
+      title: "Fix the selectors",
+      words: ["selector"],
+      body: `
+        <p>A real file often “does nothing” because the selector is missing the dot or the hash. The browser looks for a tag named <code>&lt;card&gt;</code> or <code>&lt;hello&gt;</code>, finds none, and applies zero paint. The rest of the declarations can be perfect.</p>
+        <p>The preview on the right is already broken: padding and navy never show up. You do not write a new design. You fix the two selectors so they match the HTML that is already there (<code>class="card"</code>, <code>id="hello"</code>).</p>
+        <p>Remember: class → <code>.card</code>. id → <code>#hello</code>. Element → <code>p</code> with no prefix (not this exercise).</p>
+      `,
+      exercise: {
+        type: "css",
+        prompt:
+          "This CSS is meant to pad .card and color #hello navy. It does nothing. Fix the selectors only if you can; properties can stay.",
+        fixture: '<div class="card">Hi</div><p id="hello">Ada</p>',
+        starter:
+          "card {\n  padding: 16px;\n  border: 2px solid black;\n}\nhello {\n  color: navy;\n}",
+        expected:
+          ".card {\n  padding: 16px;\n  border: 2px solid black;\n}\n#hello {\n  color: navy;\n}",
+        checks: [
+          {
+            sel: ".card",
+            style: "padding-top",
+            includes: "16",
+            msg: ".card padding — did you add the dot?",
+          },
+          {
+            sel: "#hello",
+            style: "color",
+            includes: "navy",
+            msg: "#hello navy — did you add the #?",
+          },
+        ],
+      },
+    },
+    {
+      id: "css-9",
+      title: "A card row: title left, meta right",
+      words: ["flexbox", "box-model"],
+      body: `
+        <p>One more composed look: the top of a note is a row (title left, a small word right), sitting inside a padded card. You already know each piece. Wire them without a recipe dumped as one property at a time.</p>
+        <ul>
+          <li>The <em>card</em> is the outer box: padding, a border so you can see it.</li>
+          <li>The <em>row inside</em> is flex + space-between. Put <code>display: flex</code> on <code>.row</code>, not on the title span.</li>
+        </ul>
+        <p>If you flex the card itself and it also contains a <code>&lt;p class="body"&gt;</code>, the paragraph becomes a flex item on that same row and the layout looks drunk. Flex the row. Pad the card. Different jobs, different selectors.</p>
+        <p>HTML drew the tags. CSS painted them. Next chapter is JavaScript: a click that reads a box and runs <code>if</code>. CSS will not do that for you.</p>
+      `,
+      exercise: {
+        type: "css",
+        prompt:
+          "Pad .card 16px with a 1px solid #ccc border. Make .row flex with space-between. Do not flex .card (the body line must stay under the row).",
+        fixture:
+          '<div class="card"><div class="row"><span class="title">Ada</span><span class="meta">Hi</span></div><p class="body">First note</p></div>',
+        starter: ".card {\n\n}\n.row {\n\n}\n",
+        expected:
+          ".card {\n  padding: 16px;\n  border: 1px solid #ccc;\n}\n.row {\n  display: flex;\n  justify-content: space-between;\n}",
+        checks: [
+          {
+            sel: ".card",
+            style: "padding-top",
+            includes: "16",
+            msg: "card padding 16px",
+          },
+          {
+            sel: ".card",
+            style: "border-top-width",
+            includes: "1",
+            msg: "card 1px border",
+          },
+          {
+            sel: ".row",
+            style: "display",
+            includes: "flex",
+            msg: ".row is the flex container",
+          },
+          {
+            sel: ".row",
+            style: "justify-content",
+            includes: "space-between",
+            msg: "space-between on .row",
+          },
+          {
+            sel: ".card",
+            style: "display",
+            excludes: "flex",
+            msg: "Do not display:flex the .card — only .row",
           },
         ],
       },

@@ -348,7 +348,7 @@ add.addEventListener(<span class="x">"click"</span>, () => {
         </ol>
         <p>That is a complete program on <em>this</em> browser profile. Refresh on the same laptop: localStorage can restore the list. Open the same site on a different laptop or a different Chrome profile: empty. That is not a bug. There is no shared disk.</p>
         <div class="callout word"><strong>New word — frontend.</strong> HTML + CSS + JS: what the browser runs. You just did this.</div>
-        <p>To share one list among many people you need a <strong>second program</strong> that owns the data (a backend). The page will send it a message. That is soon. Next chapter is Git: snapshot these files so you can see what an agent changed. Then we name the jobs (input, rules, remember, show). We will not restart HTML.</p>
+        <p>To share one list among many people you need a <strong>second program</strong> that owns the data (a backend). The page will send it a message. That is soon. First, one more JavaScript: two boxes, one Add, a list — the same shape as a notes screen, not a single-property drill.</p>
       `,
       exercise: {
         type: "choice",
@@ -371,6 +371,61 @@ add.addEventListener(<span class="x">"click"</span>, () => {
           },
         ],
         why: "Install does not create a server. Shared data needs another program.",
+      },
+    },
+    {
+      id: "js-9",
+      title: "Add a note from two boxes",
+      words: ["javascript", "dom", "event"],
+      body: `
+        <p>You already added a row from one box. A note has a title and text. Same order: read both, <code>if</code> the title is empty then stop, otherwise append a row that shows both.</p>
+<pre>add.addEventListener(<span class="x">"click"</span>, () => {
+  <span class="t">const</span> title = document.getElementById(<span class="x">"title"</span>).value;
+  <span class="t">const</span> text = document.getElementById(<span class="x">"text"</span>).value;
+  <span class="t">if</span> (title === <span class="x">""</span>) <span class="t">return</span>;
+
+  <span class="t">const</span> li = document.createElement(<span class="x">"li"</span>);
+  li.textContent = title + <span class="x">": "</span> + text;
+  document.getElementById(<span class="x">"list"</span>).appendChild(li);
+});</pre>
+        <p>The checker clicks Add with title Ada and text Hi, then clears the title and clicks again. One row. That row mentions Ada and Hi. If you skip the <code>if</code>, you get a junk row. If you only copy the title, the text is missing.</p>
+        <p>This is still one computer. Next chapter is Git: how a team shares these files without dumping onto <code>main</code>. Then we name the jobs. We will not restart HTML.</p>
+      `,
+      exercise: {
+        type: "js-dom",
+        prompt:
+          "On #add click: read #title and #text. If title is empty, do nothing. Else append an li that contains both title and text.",
+        fixture:
+          '<input id="title" type="text"><input id="text" type="text"><button id="add" type="button">Add</button><ul id="list"></ul>',
+        starter:
+          'const add = document.getElementById("add");\nadd.addEventListener("click", () => {\n  \n});\n',
+        expected:
+          'const add = document.getElementById("add");\nadd.addEventListener("click", () => {\n  const title = document.getElementById("title").value;\n  const text = document.getElementById("text").value;\n  if (title === "") return;\n  const li = document.createElement("li");\n  li.textContent = title + ": " + text;\n  document.getElementById("list").appendChild(li);\n});',
+        after: (doc) => {
+          doc.getElementById("title").value = "Ada";
+          doc.getElementById("text").value = "Hi";
+          doc.getElementById("add").click();
+          doc.getElementById("title").value = "";
+          doc.getElementById("text").value = "ignored";
+          doc.getElementById("add").click();
+        },
+        checks: [
+          {
+            sel: "#list li",
+            count: 1,
+            msg: "One row only — empty title must not add a second",
+          },
+          {
+            sel: "#list li",
+            text: "Ada",
+            msg: "The row should mention Ada",
+          },
+          {
+            sel: "#list li",
+            text: "Hi",
+            msg: "The row should mention Hi",
+          },
+        ],
       },
     },
   ],
